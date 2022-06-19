@@ -1,0 +1,22 @@
+.trending-container {
+  background-color: white;
+  height: 300px;
+  width: 280px;
+  position: absolute;
+  right: 10%;
+  top: 30%;
+  border-radius: 8px;
+
+  .heading {
+    font-family: $base-font;
+    font-size: 18px;
+    font-weight: $base-font-weight;
+    display: flex;
+    padding: 10px;
+    align-items: center;
+  }
+
+  .ant-divider-horizontal {
+    margin: 0 !important;
+  }
+}

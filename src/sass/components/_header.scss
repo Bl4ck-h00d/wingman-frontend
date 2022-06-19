@@ -1,0 +1,59 @@
+#root{
+    background-color: #DAE0E6;
+    height: 1000vh;
+}
+.btn-bg-gradient {
+    background: $button-gradient-color;
+    border-radius: 6px;
+}
+.header-container{
+    margin: 0;
+    max-height: 90px;
+    width: 100%;
+    background-color: $white;
+    padding: 20px;
+    position: fixed;
+    top: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+.signup-btn {
+    height: 40px;
+}
+.search-auto-complete{
+    width: 800px;
+}
+
+.search-input-tag {
+    margin: 5px;
+    background: #116af4;
+    border-radius: 4px;
+    color: white;
+    height: 24px;
+
+    span {
+        color: white;
+    }
+}
+
+.auto-complete-rendered-Label {
+    display: flex;
+    justify-content: space-between;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 20px;
+    color: #116af4;
+}
+
+.auto-complete-rendered-Title {
+    padding-left: 10px;
+    color: #5c5e78;
+}
