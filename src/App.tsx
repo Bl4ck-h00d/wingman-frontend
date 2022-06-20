@@ -1,16 +1,15 @@
+import { BrowserRouter as Router } from "react-router-dom";
 import "./App.scss";
+import AnimatedRoutes from "./components/animatedRoutes";
 import Header from "./components/header";
-import TrendingTags from "./components/trendingTags";
-import PostContainer from "./components/posts";
-import AddPostButton from "./components/addPostButton";
 
 function App() {
   return (
     <div className="App">
-      <Header />
-      <PostContainer />
-      <TrendingTags />
-      <AddPostButton />
+      <Router>
+        <Header />
+        <AnimatedRoutes />
+      </Router>
     </div>
   );
 }

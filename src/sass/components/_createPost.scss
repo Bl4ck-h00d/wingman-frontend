@@ -1,0 +1,33 @@
+.create-post-container{
+    position: relative;
+    top: 100px;
+    margin: 20px;
+    background-color: white;
+    height: 100%;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+
+    .heading{
+        font-family: $base-font;
+        text-transform: capitalize;
+    }
+
+    .warning-text{
+        font-family: $base-font;
+        font-size: 15px;
+        color: rgb(235, 66, 28);
+        margin-left: 80px;
+        margin-bottom: 20px;
+    }
+
+    .form-container{
+        width: 70% !important;
+
+        label{font-family: $base-font;
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
+    }
+}
