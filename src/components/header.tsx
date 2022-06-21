@@ -8,7 +8,7 @@ const Header = () => {
     <>
       <div className="header-container">
         <span className="header-logo">
-          <img src={Logo} alt="Wingman chat" width="140px" height="40px" />
+          <a href="http://localhost:3000/"><img src={Logo} alt="Wingman chat" width="140px" height="40px" /></a>
         </span>
         <Search />
         <Button className="btn-bg-gradient signup-btn" type="primary">
