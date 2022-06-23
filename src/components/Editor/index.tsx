@@ -360,7 +360,11 @@ const ImageEditor = ({
         <div className="edit-btn-container">
           <button
             className="edit-close-btn"
-            onClick={() => setIsModalVisible(false)}
+            onClick={() => {
+              setIsModalVisible(false);
+              onCancelCrop();
+              onCancelDraw();
+            }}
           >
             <div> Close </div>
           </button>

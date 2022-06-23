@@ -10,6 +10,8 @@ import {
 import TagField from "./TagFormField";
 import UploadImage from "./UploadImage";
 import ImageEditor from "../Editor";
+import { ImageEditorModal } from "../Editor/ImageEditorModal";
+import { handleImg } from "../Utils/ImageProcessing";
 const { TextArea } = Input;
 
 const CreatePost = () => {
@@ -192,7 +194,7 @@ const CreatePost = () => {
           </Button>
         </Form.Item>
       </Form>
-      <Modal
+      {/* <Modal
         title="Edit Image"
         visible={isModalVisible}
         footer={null}
@@ -207,7 +209,20 @@ const CreatePost = () => {
           setIsModalVisible={setIsModalVisible}
           setSelectedTool={setTool}
         />
-      </Modal>
+      </Modal> */}
+      <ImageEditorModal
+        visible={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        <ImageEditor
+          uri={currentImage.image?.uri || currentImage.image?.imageUrl}
+          editScreen={saveEditImage}
+          index={currentImage.index}
+          setIsModalVisible={setIsModalVisible}
+          setSelectedTool={setTool}
+        />
+      </ImageEditorModal>
     </motion.div>
   );
 };

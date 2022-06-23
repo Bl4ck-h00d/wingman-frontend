@@ -7,12 +7,10 @@
   justify-content: center;
   overflow: hidden;
 
-  //   .edit-image {
-  //     width: 90%;
-  //     position: absolute;
-  //     left: 5%;
-  //     top: 12%;
-  //   }
+    .edit-image {
+      height: auto;
+      max-width: 100%;
+    }
 }
 
 .edit-btn-container {

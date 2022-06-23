@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Row, Col, Upload, Tooltip } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { beforeUploadImage, getBase64 } from "src/utils/commonHelpers";
+import { handleImg } from "../Utils/ImageProcessing";
 
 const { Dragger } = Upload;
 
@@ -47,9 +48,10 @@ const UploadImage = ({ onChange, images }) => {
           listType="picture-card"
           showUploadList={false}
           beforeUpload={beforeUploadImage}
-          customRequest={(f) => {
-            setImgFile(f.file);
-            getBase64(f.file, (url) => {
+          customRequest={async (f) => {
+            let file = await handleImg(f.file);
+            setImgFile(file["file"]);
+            getBase64(file["file"], (url) => {
               setImgUrl(url);
             });
           }}

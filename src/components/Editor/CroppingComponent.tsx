@@ -43,8 +43,7 @@ const CroppingComponent = ({ w, h }: { w: number; h: number; }) => {
       const { width, height } = boxRef.current.getBoundingClientRect();
 
       const scale = Math.min(w / width, h / height);
-      console.log(width, height);
-
+   
       const actualmx = mx * scale;
       const actualmy = my * scale;
 
@@ -61,6 +60,7 @@ const CroppingComponent = ({ w, h }: { w: number; h: number; }) => {
       if (newTop > crop.bottom - MARGIN) newTop = crop.bottom - MARGIN;
       if (newBottom > h) newBottom = h;
       if (newBottom < crop.top + MARGIN) newBottom = crop.top + MARGIN;
+   
       dispatch(
         setCropData({
           left: sides.left ? newLeft : left,
