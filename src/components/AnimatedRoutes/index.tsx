@@ -1,7 +1,7 @@
 import React from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
-import Home from "../home";
-import CreatePost from "../createPost";
+import Home from "../Home";
+import CreatePost from "../Form/CreatePostForm";
 import { AnimatePresence } from "framer-motion";
 
 const AnimatedRoutes = () => {

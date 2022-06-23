@@ -1,33 +1,121 @@
-.create-post-container{
-    position: relative;
-    top: 100px;
-    margin: 20px;
-    background-color: white;
-    height: 100%;
+.create-post-container {
+  position: relative;
+  top: 100px;
+  margin: 20px;
+  background-color: white;
+  height: 100%;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  
+
+  .heading {
+    font-family: $base-font;
+    text-transform: capitalize;
+  }
+
+  .warning-text {
+    font-family: $base-font;
+    font-size: 15px;
+    color: rgb(255, 0, 0);
+    margin-left: 120px;
+    margin-bottom: 40px;
+    border: 2px solid red;
+    width: 680px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 60px;
     border-radius: 8px;
-    padding: 20px;
-    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    background-color: rgb(241, 197, 197);
+  }
 
-    .heading{
-        font-family: $base-font;
-        text-transform: capitalize;
+  .submit-btn {
+    height: 40px;
+    width: 90px;
+    font-family: $base-font;
+    font-size: 15px;
+  }
+
+  .form-container {
+    width: 70% !important;
+
+    label {
+      font-family: $base-font;
+      font-size: 16px;
+      font-weight: 500;
+    }
+  }
+
+  .image-list {
+    display: flex;
+  }
+
+  .image-container {
+    height: 150px;
+    width: 150px;
+    border: 1px dashed gray;
+    margin-right: 10px;
+    position: relative;
+    z-index: 1;
+
+    img {
+      max-width: 100%;
+      max-height: 100%;
     }
 
-    .warning-text{
-        font-family: $base-font;
-        font-size: 15px;
-        color: rgb(235, 66, 28);
-        margin-left: 80px;
-        margin-bottom: 20px;
+    .edit-btn{
+        display: none;
     }
+  }
 
-    .form-container{
-        width: 70% !important;
-
-        label{font-family: $base-font;
-            font-size: 16px;
-            font-weight: 500;
+  .image-container:hover{
+  
+    position: relative;
+    z-index: 2;
+    // opacity: 0.3;
+    background-color: rgba(0, 0, 0, 0.3);  
+    
+    .edit-btn {
+            display: flex;
+            justify-content: space-around;
+            position: absolute;
+            bottom: 50%;
+            left: 20%;
+            height: 20px;
+            width: 100px;
+            z-index:3;
+            opacity:1;
         }
-        
+  }
+
+  .upload-button {
+    .ant-upload.ant-upload-drag {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      border-radius: 8px;
+      border: 0px;
+      cursor: pointer;
+      background-image: $button-gradient-color;
     }
+
+    .ant-upload.ant-upload-drag .ant-upload-btn {
+      border-radius: 18px !important;
+      height: 40px;
+      width: 150px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+
+        
+    font-family: $base-font;
+    text-transform: capitalize;
+    font-size: 14px;
+    margin-left: 10px;
+    margin-bottom: 20px;
+  }
 }

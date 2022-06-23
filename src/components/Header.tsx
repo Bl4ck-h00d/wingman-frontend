@@ -1,5 +1,5 @@
 import React from "react";
-import Search from "./search/index";
+import Search from "./Search/index";
 import { Button } from "antd";
 import  Logo  from "../assets/img/logo.png";
 

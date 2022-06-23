@@ -1,11 +1,11 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 
 
-import globalModal from "./global";
+import imageEditor from "./imageEditor";
 
 
 const reducer = combineReducers({
-  globalModal,
+  imageEditor,
 });
 
 // reset state on logout

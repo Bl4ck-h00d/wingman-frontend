@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { AutoComplete, Input, Dropdown, Checkbox, Menu } from "antd";
 import { DownOutlined } from "@ant-design/icons";
-import { ElementTagInterface } from "src/Interfaces/Search";
-import SearchTags from "./searchTags";
+import { ElementTagInterface } from "src/Interfaces/SearchInterface";
+import SearchTags from "./SearchTags";
 import { ReactComponent as InputSearchIcon } from "../../assets/img/searchInputIcon.svg";
 
 
