@@ -163,7 +163,9 @@ const ImageEditor = ({
       cvs.toBlob((blob) => {
         if (!blob) return;
         const url = URL.createObjectURL(blob);
-        const file = new File([blob], uri);
+        const file = new File([blob], fileProp["name"], {
+          type: fileProp["type"],
+        });
         setTmpScreen({ uri: url, file: file });
         setTool("move");
         setSelectedTool(tool);
