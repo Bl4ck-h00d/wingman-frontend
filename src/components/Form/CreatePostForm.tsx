@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { motion } from "framer-motion";
-import { Button, Switch, Form, Input, Divider, Spin, Modal } from "antd";
+import { Button, Switch, Form, Input, Divider, Spin, notification } from "antd";
 import {
   LoadingOutlined,
   WarningTwoTone,
@@ -11,10 +11,27 @@ import TagField from "./TagFormField";
 import UploadImage from "./UploadImage";
 import ImageEditor from "../Editor";
 import { ImageEditorModal } from "../Editor/ImageEditorModal";
-import { handleImg } from "../Utils/ImageProcessing";
+import { handleImg } from "src/utils/ImageProcessing";
+import { calcRelativeAxisPosition } from "framer-motion/types/projection/geometry/delta-calc";
+import axios from "axios";
+import { dataURItoBlob } from "src/utils/commonHelpers";
 const { TextArea } = Input;
 
+type NotificationType = "success" | "info" | "warning" | "error";
+
+const openNotificationWithIcon = (
+  type: NotificationType,
+  title: string,
+  description: string
+) => {
+  notification[type]({
+    message: title,
+    description: description,
+  });
+};
+
 const CreatePost = () => {
+  const [form] = Form.useForm();
   const [submitLoader, setSubmitLoader] = useState<boolean>(false);
   const [tags, setTags] = useState<string[]>([]);
   const [postAnonymously, setPostAnonymously] = useState<boolean>(false);
@@ -37,7 +54,14 @@ const CreatePost = () => {
   };
 
   const showModal = (image, index) => {
-    setCurrentImage({ index: index, image: image });
+    setCurrentImage({
+      index: index,
+      image: {
+        imageUrl: image.imageUrl,
+        file: image.file,
+        uri: image?.uri || null,
+      },
+    });
     setIsModalVisible(true);
   };
 
@@ -49,14 +73,6 @@ const CreatePost = () => {
     setIsModalVisible(false);
   };
 
-  useEffect(() => {
-    if (submitLoader) {
-      setTimeout(() => {
-        setSubmitLoader(false);
-      }, 3000);
-    }
-  }, [submitLoader]);
-
   const handleDelete = (id) => {
     const newImageList = images.filter((image, index) => {
       if (index !== id) return true;
@@ -66,18 +82,59 @@ const CreatePost = () => {
     setImages((prevState) => newImageList);
   };
 
-  const onFinish = (values: any) => {
+  const onFinish = async (values: any) => {
+    if (values.title.trim() === "" || values.description.trim() === "") {
+      onFinishFailed("Required fields empty");
+      return;
+    }
+
+    const imageFiles = images.map((image, index) => {
+      return image.file;
+    });
+
     values = {
       ...values,
       tags: tags,
       anonymous: postAnonymously,
-      images: images,
     };
-    console.log("Success:", values);
+
+    const formData = new FormData();
+    for (let key in values) {
+      formData.append(key, values[key]);
+    }
+
+    imageFiles.forEach((file) => {
+      formData.append("images", file, file.name);
+    });
+
+    try {
+      const result = await axios.post(
+        "http://localhost:5000/api/create-post",
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
+      setSubmitLoader(false);
+      console.log(result.data); //donot remove (debugging purpose)
+      openNotificationWithIcon(
+        "success",
+        "Success",
+        "Post created successfully"
+      );
+    } catch (error) {
+      setSubmitLoader(false);
+      console.log(error); //donot remove (debugging purpose)
+      openNotificationWithIcon("error", "Error", error["message"]);
+    }
   };
 
   const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
+    setSubmitLoader(false);
+    openNotificationWithIcon(
+      "warning",
+      "Warning",
+      "Please fill all the required fields"
+    );
+    return;
   };
 
   const loaderIcon = (
@@ -183,33 +240,26 @@ const CreatePost = () => {
             </div>
           </>
         </Form.Item>
-        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-          <Button
-            type="primary"
-            className="btn-bg-gradient submit-btn"
-            htmlType="submit"
-            onClick={() => setSubmitLoader(true)}
-          >
-            {submitLoader ? <Spin indicator={loaderIcon} /> : "Submit"}
-          </Button>
+
+        <Form.Item
+          shouldUpdate
+          wrapperCol={{ offset: 8, span: 16 }}
+          className="submit"
+        >
+          {() => (
+            <Button
+              type="primary"
+              className="btn-bg-gradient submit-btn"
+              htmlType="submit"
+              onClick={() => setSubmitLoader(true)}
+              style={{ pointerEvents: submitLoader ? "none" : "auto" }}
+            >
+              {submitLoader ? <Spin indicator={loaderIcon} /> : "Submit"}
+            </Button>
+          )}
         </Form.Item>
       </Form>
-      {/* <Modal
-        title="Edit Image"
-        visible={isModalVisible}
-        footer={null}
-        onOk={handleOk}
-        onCancel={handleCancel}
-        style={{ overflow: tool === "move" ? "hidden" : "auto" }}
-      >
-        <ImageEditor
-          uri={currentImage.image?.uri || currentImage.image?.imageUrl}
-          editScreen={saveEditImage}
-          index={currentImage.index}
-          setIsModalVisible={setIsModalVisible}
-          setSelectedTool={setTool}
-        />
-      </Modal> */}
+
       <ImageEditorModal
         visible={isModalVisible}
         onOk={handleOk}
@@ -217,6 +267,7 @@ const CreatePost = () => {
       >
         <ImageEditor
           uri={currentImage.image?.uri || currentImage.image?.imageUrl}
+          fileProp={currentImage.image.file}
           editScreen={saveEditImage}
           index={currentImage.index}
           setIsModalVisible={setIsModalVisible}

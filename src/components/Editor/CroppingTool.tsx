@@ -10,7 +10,7 @@ interface ICroppingTooltipProps {
 }
 const CroppingTooltip = ({ onCancel, onConfirm }: ICroppingTooltipProps) => {
   const crop = useAppSelector(selectCrop);
-  console.log("crop", crop);
+
   return (
     <>
       {/* Cancel drawing */}

@@ -9,6 +9,7 @@ import { clearCrop, clearStrokes, selectStrokes } from "src/redux/imageEditor";
 import DrawingCanvas from "./DrawingCanvas";
 import { Tooltip } from "antd";
 
+
 const ToolButton = ({
   tool,
   selected,
@@ -48,6 +49,7 @@ interface IScreenEditorProps {
   index: number;
   setIsModalVisible: any;
   setSelectedTool: any;
+  fileProp: any;
 }
 
 const ImageEditor = ({
@@ -56,6 +58,7 @@ const ImageEditor = ({
   index,
   setIsModalVisible,
   setSelectedTool,
+  fileProp,
 }: IScreenEditorProps) => {
   const dispatch = useAppDispatch();
   const [tool, setTool] = useState("move");
@@ -106,10 +109,13 @@ const ImageEditor = ({
       ctx.globalCompositeOperation = "destination-over";
       ctx.drawImage(image.current, 0, 0, width, height);
 
-      cvs.toBlob((blob) => {
+      cvs.toBlob(async (blob) => {
         if (!blob) return;
         const url = URL.createObjectURL(blob);
-        const file = new File([blob], uri);
+        const file = new File([blob], fileProp["name"], {
+          type: fileProp["type"],
+        });
+        
         setTmpScreen({ uri: url, file: file });
         setTool("move");
         setSelectedTool(tool);

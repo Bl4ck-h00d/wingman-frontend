@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Row, Col, Upload, Tooltip } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { beforeUploadImage, getBase64 } from "src/utils/commonHelpers";
-import { handleImg } from "../Utils/ImageProcessing";
+import { handleImg } from "src/utils/ImageProcessing";
 
 const { Dragger } = Upload;
 
