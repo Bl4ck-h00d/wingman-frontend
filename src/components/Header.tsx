@@ -1,20 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 import Search from "./Search/index";
-import { Button } from "antd";
+import { Tabs, Button, Checkbox, Form, Input, Modal } from "antd";
 import  Logo  from "../assets/img/logo.png";
+import AuthModal from "./Authentication/AuthModal";
 
 const Header = () => {
+  const [isModalVisible, setIsModalVisible] = useState(false);
   return (
     <>
       <div className="header-container">
         <span className="header-logo">
-          <img src={Logo} alt="Wingman chat" width="140px" height="40px" />
+          <a href="http://localhost:3000/">
+            <img src={Logo} alt="Wingman chat" width="140px" height="40px" />
+          </a>
         </span>
-        <Search />
-        <Button className="btn-bg-gradient signup-btn" type="primary">
-          SignUp
+        <Button
+          type="primary"
+          onClick={()=>setIsModalVisible(true)}
+          className="btn-bg-gradient signup-btn"
+        >
+          Login
         </Button>
       </div>
+      <AuthModal visible={isModalVisible} setVisible={setIsModalVisible}/>
     </>
   );
 };
