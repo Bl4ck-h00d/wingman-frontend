@@ -30,7 +30,10 @@ const TagField = ({ setTagsProp }) => {
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
+    const reg = /^[A-Za-z][A-Za-z0-9]*$/;
+    if (e.target.value === "" || reg.test(e.target.value)) {
+      setInputValue(e.target.value);
+    }
   };
 
   const handleInputConfirm = () => {

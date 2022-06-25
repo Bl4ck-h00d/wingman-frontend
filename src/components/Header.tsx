@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import Search from "./search/index";
-import Logo from "../assets/img/logo.png";
+import Search from "./Search/index";
 import { Tabs, Button, Checkbox, Form, Input, Modal } from "antd";
+import  Logo  from "../assets/img/logo.png";
 import AuthModal from "./Authentication/AuthModal";
 
 const Header = () => {

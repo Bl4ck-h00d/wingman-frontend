@@ -6,9 +6,13 @@ ADD COMPONENTS AFTER THIS COMMENT
 
 @import "./components/header";
 @import "./components/trendingTags";
-@import "./components/postContainer";
+@import "./components/feedContainer";
 @import "./components/addPostButton";
 @import "./components/createPost";
 @import "./components/tagField";
 @import "./components/authModal";
+@import "./components/drawingCanvas";
+@import "./components/croppingComponent";
+@import "./components/imageEditor";
+@import "./components/imageEditorModal";
 

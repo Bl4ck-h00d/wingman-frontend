@@ -1,9 +1,10 @@
 import React from "react";
-import TrendingTags from "./trendingTags";
-import PostContainer from "../posts";
-import AddPostButton from "./addPostButton";
+import TrendingTags from "./TrendingTags";
+import FeedContainer from "../Feed";
+import AddPostButton from "./AddPostButton";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+
 
 const Home = () => {
   return (
@@ -13,7 +14,7 @@ const Home = () => {
       exit={{ opacity: 0, transition: { duration: 0.2 } }}
     >
       <TrendingTags />
-      <PostContainer />
+      <FeedContainer />
       <Link to="/post">
         <AddPostButton />
       </Link>

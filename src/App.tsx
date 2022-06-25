@@ -1,7 +1,7 @@
 import { BrowserRouter as Router } from "react-router-dom";
 import "./App.scss";
-import AnimatedRoutes from "./components/animatedRoutes";
-import Header from "./components/header";
+import AnimatedRoutes from "./components/AnimatedRoutes";
+import Header from "./components/Header";
 
 function App() {
   return (
