@@ -51,51 +51,65 @@ const Signup: React.FC = () => {
   };
 
   return (
-    <Form
-      name="basic"
-      labelCol={{ span: 8 }}
-      wrapperCol={{ span: 16 }}
-      initialValues={{ remember: true }}
-      onFinish={onFinish}
-      onFinishFailed={onFinishFailed}
-      autoComplete="off"
-      className="signup-form"
-    >
-      <Form.Item
-        label="Email ID"
-        name="email"
-        rules={[{ required: true, message: "Please input your Email ID!" }]}
+    <section>
+      <Form
+        name="basic"
+        labelCol={{ span: 8 }}
+        wrapperCol={{ span: 16 }}
+        initialValues={{ remember: true }}
+        onFinish={onFinish}
+        onFinishFailed={onFinishFailed}
+        autoComplete="off"
+        className="signup-form"
       >
-        <Input />
-      </Form.Item>
-      <Form.Item
-        label="Username"
-        name="username"
-        rules={[{ required: true, message: "Please input your username!" }]}
-      >
-        <Input />
-      </Form.Item>
-
-      <Form.Item
-        label="Password"
-        name="password"
-        rules={[{ required: true, message: "Please input your password!" }]}
-      >
-        <Input.Password />
-      </Form.Item>
-
-      <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-        <Button
-          type="primary"
-          htmlType="submit"
-          loading={loading}
-          onClick={handleOk}
-          style={{ pointerEvents: loading ? "none" : "auto" }}
+        <Form.Item
+          label="Email ID"
+          name="email"
+          rules={[{ required: true, message: "Please input your Email ID!" }]}
         >
-          Signup
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label="Username"
+          name="username"
+          rules={[{ required: true, message: "Please input your username!" }]}
+        >
+          <Input />
+        </Form.Item>
+
+        <Form.Item
+          label="Password"
+          name="password"
+          rules={[{ required: true, message: "Please input your password!" }]}
+        >
+          <Input.Password />
+        </Form.Item>
+
+        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            loading={loading}
+            onClick={handleOk}
+          >
+            Signup
+          </Button>
+        </Form.Item>
+      </Form>
+
+      <div className="social-divider">
+        <span className="or">or</span>
+      </div>
+      <div className="signup-options">
+        <Button type="primary">
+          <span className="button-text">Continue with Google</span>
+          <span className="button-icon"></span>
         </Button>
-      </Form.Item>
-    </Form>
+        <Button type="primary">
+          <span className="button-text">Continue with Facebook</span>
+        </Button>
+      </div>
+    </section>
   );
 };
 

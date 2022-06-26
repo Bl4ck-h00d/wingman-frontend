@@ -12,9 +12,6 @@ const reducer = combineReducers({
 
 // reset state on logout
 const rootReducer = (state, action) => {
-  // if (action.type === "auth_modal/setLogout") {
-  //   state = undefined;
-  // }
   return reducer(state, action);
 };
 
