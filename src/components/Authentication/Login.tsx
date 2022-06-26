@@ -1,22 +1,54 @@
-import { Button, Modal, Checkbox, Form, Input } from "antd";
+import { Button, Checkbox, Form, Input } from "antd";
 import React, { useState } from "react";
+import Notification from "../Utils/Notification";
+import axios from "src/utils/axiosConfig";
+import { useAppSelector, useAppDispatch } from "src/redux/hooks";
+import { setIsLoggedIn, setToken, setCurrentUser } from "src/redux/auth";
 
 const Login: React.FC = () => {
   const [loading, setLoading] = useState(false);
+  const dispatch = useAppDispatch();
 
   const handleOk = () => {
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-    }, 3000);
   };
 
-  const onFinish = (values: any) => {
-    console.log("Success:", values);
+  const postData = async (values: any) => {
+    const result = await axios.post("/api/signin", JSON.stringify(values), {
+      headers: { "Content-Type": "application/json" },
+      withCredentials: true,
+    });
+
+    return result.data;
+  };
+
+  const onFinish = async (values: any) => {
+    if (values.email.trim() === "" || values.password.trim() === "") {
+      onFinishFailed("Required fields empty");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const result = await postData(values);
+      dispatch(setToken(result.token));
+      dispatch(setIsLoggedIn(true));
+      dispatch(
+        setCurrentUser({ username: result.username, email: result.email })
+      );
+      Notification("success", "Sucessfull", "Logged in successfully");
+    } catch (error) {
+      console.log(error); //donot remove (debugging purpose)
+      Notification("error", "Error", error["response"]["data"]["msg"]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
+    setLoading(false);
+    Notification("warning", "Warning", "Please fill all the required fields");
+    return;
   };
   return (
     <Form
@@ -30,8 +62,8 @@ const Login: React.FC = () => {
       className="login-form"
     >
       <Form.Item
-        label="Username"
-        name="username"
+        label="Email"
+        name="email"
         rules={[{ required: true, message: "Please input your username!" }]}
       >
         <Input />
@@ -54,7 +86,12 @@ const Login: React.FC = () => {
       </Form.Item>
 
       <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-        <Button type="primary" htmlType="submit" loading={loading} onClick={handleOk}>
+        <Button
+          type="primary"
+          htmlType="submit"
+          loading={loading}
+          onClick={handleOk}
+        >
           Login
         </Button>
       </Form.Item>

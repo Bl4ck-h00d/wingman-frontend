@@ -4,6 +4,7 @@ import Home from "../Home";
 import CreatePost from "../Form/CreatePostForm";
 import { AnimatePresence } from "framer-motion";
 
+
 const AnimatedRoutes = () => {
   const location = useLocation();
 
@@ -16,5 +17,6 @@ const AnimatedRoutes = () => {
     </AnimatePresence>
   );
 };
+
 
 export default AnimatedRoutes;

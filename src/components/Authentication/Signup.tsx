@@ -1,23 +1,55 @@
-import { Button, Modal, Checkbox, Form, Input } from "antd";
+import { Button, Form, Input } from "antd";
 import React, { useState } from "react";
+import Notification from "../Utils/Notification";
+import axios from "src/utils/axiosConfig";
+import { useAppDispatch } from "src/redux/hooks";
+import { setShowVerificationPage } from "src/redux/auth";
 
 const Signup: React.FC = () => {
   const [loading, setLoading] = useState(false);
+  const dispatch = useAppDispatch();
 
   const handleOk = () => {
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-    }, 3000);
   };
 
-  const onFinish = (values: any) => {
-    console.log("Success:", values);
+  const postData = async (values: any) => {
+    try {
+      const result = await axios.post("/api/signup", JSON.stringify(values), {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      });
+      return result;
+    } catch (error) {
+      console.log(error); //donot remove (debugging purpose)
+      Notification("error", "Error", error["response"]["data"]["msg"]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const onFinish = async (values: any) => {
+    if (
+      values.email.trim() === "" ||
+      values.username.trim() === "" ||
+      values.password.trim() === ""
+    ) {
+      onFinishFailed("Required fields empty");
+      setLoading(false);
+      return;
+    }
+
+    await postData(values);
+    
+    //TODO-Redirect to email verification
   };
 
   const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
+    setLoading(false);
+    Notification("warning", "Warning", "Please fill all the required fields");
+    return;
   };
+
   return (
     <Form
       name="basic"
@@ -52,20 +84,13 @@ const Signup: React.FC = () => {
         <Input.Password />
       </Form.Item>
 
-      <Form.Item
-        name="remember"
-        valuePropName="checked"
-        wrapperCol={{ offset: 8, span: 16 }}
-      >
-        {/* <Checkbox>Remember me</Checkbox> */}
-      </Form.Item>
-
       <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
         <Button
           type="primary"
           htmlType="submit"
           loading={loading}
           onClick={handleOk}
+          style={{ pointerEvents: loading ? "none" : "auto" }}
         >
           Signup
         </Button>

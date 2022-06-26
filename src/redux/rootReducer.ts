@@ -2,17 +2,19 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 
 
 import imageEditor from "./imageEditor";
+import authModal from "./auth";
 
 
 const reducer = combineReducers({
   imageEditor,
+  authModal
 });
 
 // reset state on logout
 const rootReducer = (state, action) => {
-  if (action.type === "auth_modal/setLogout") {
-    state = undefined;
-  }
+  // if (action.type === "auth_modal/setLogout") {
+  //   state = undefined;
+  // }
   return reducer(state, action);
 };
 

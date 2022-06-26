@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Button, Switch, Form, Input, Divider, Spin, notification } from "antd";
 import {
@@ -11,27 +11,13 @@ import TagField from "./TagFormField";
 import UploadImage from "./UploadImage";
 import ImageEditor from "../Editor";
 import { ImageEditorModal } from "../Editor/ImageEditorModal";
-import { handleImg } from "src/utils/ImageProcessing";
-import { calcRelativeAxisPosition } from "framer-motion/types/projection/geometry/delta-calc";
-import axios from "axios";
-import { dataURItoBlob } from "src/utils/commonHelpers";
+import axios from "src/utils/axiosConfig";
+import Notification from "../Utils/Notification";
+import { useAppSelector } from "src/redux/hooks";
 const { TextArea } = Input;
 
-type NotificationType = "success" | "info" | "warning" | "error";
-
-const openNotificationWithIcon = (
-  type: NotificationType,
-  title: string,
-  description: string
-) => {
-  notification[type]({
-    message: title,
-    description: description,
-  });
-};
-
 const CreatePost = () => {
-  const [form] = Form.useForm();
+  const { isLoggedIn, token } = useAppSelector((state) => state.authModal);
   const [submitLoader, setSubmitLoader] = useState<boolean>(false);
   const [tags, setTags] = useState<string[]>([]);
   const [postAnonymously, setPostAnonymously] = useState<boolean>(false);
@@ -88,6 +74,12 @@ const CreatePost = () => {
       return;
     }
 
+    if (!isLoggedIn) {
+      setSubmitLoader(false);
+      Notification("warning", "Warning", "Please Login before creating a post");
+      return;
+    }
+
     const imageFiles = images.map((image, index) => {
       return image.file;
     });
@@ -108,32 +100,26 @@ const CreatePost = () => {
     });
 
     try {
-      const result = await axios.post(
-        "http://localhost:5000/api/create-post",
-        formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
-      );
+      //Post the form data to ther server
+      const result = await axios.post("/api/create-post", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setSubmitLoader(false);
-      console.log(result.data); //donot remove (debugging purpose)
-      openNotificationWithIcon(
-        "success",
-        "Success",
-        "Post created successfully"
-      );
+      // console.log(result.data); //donot remove (debugging purpose)
+      Notification("success", "Success", "Post created successfully");
     } catch (error) {
       setSubmitLoader(false);
       console.log(error); //donot remove (debugging purpose)
-      openNotificationWithIcon("error", "Error", error["message"]);
+      Notification("error", "Error", error["message"]);
     }
   };
 
   const onFinishFailed = (errorInfo: any) => {
     setSubmitLoader(false);
-    openNotificationWithIcon(
-      "warning",
-      "Warning",
-      "Please fill all the required fields"
-    );
+    Notification("warning", "Warning", "Please fill all the required fields");
     return;
   };
 

@@ -26,9 +26,7 @@ const AuthModal = ({ visible , setVisible}) => {
   };
   const { TabPane } = Tabs;
 
-  const onChange = (key: string) => {
-    console.log(key);
-  };
+ 
   return (
     <Modal
       visible={isModalVisible}
@@ -36,11 +34,11 @@ const AuthModal = ({ visible , setVisible}) => {
       onCancel={handleCancel}
       footer={null}
     >
-      <Tabs defaultActiveKey="1" onChange={onChange}>
+      <Tabs defaultActiveKey="1" >
         <TabPane tab="Login" key="1">
           <Login />
         </TabPane>
-        <TabPane tab="Signup" key="2">
+        <TabPane tab="SignUp" key="2">
           <Signup />
         </TabPane>
       </Tabs>
