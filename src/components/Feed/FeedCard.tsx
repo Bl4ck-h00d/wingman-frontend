@@ -12,6 +12,7 @@ import { CommentOutlined, ShareAltOutlined } from "@ant-design/icons";
 import axios from "src/utils/axiosConfig";
 import { useAppSelector } from "src/redux/hooks";
 import Notification from "../Utils/Notification";
+import { useNavigate } from "react-router-dom";
 
 const { Paragraph } = Typography;
 
@@ -43,6 +44,7 @@ const FeedCard = ({
   const [isSavedPost, setIsSavedPost] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { isLoggedIn, token } = useAppSelector((state) => state.authModal);
+  const navigate = useNavigate();
 
   const updateRatings = async (newUserVote) => {
     const response = await axios.put(
@@ -114,6 +116,10 @@ const FeedCard = ({
     setIsSavedPost((prevState) => !prevState);
   };
 
+  const getPost = () => {
+    navigate(`/post/${id}`);
+  };
+
   return (
     <>
       <div className="feed-card-container">
@@ -176,8 +182,10 @@ const FeedCard = ({
               )}
               {author !== null ? <>Posted by {author}</> : <>Anonymous</>}
             </div>
-            <div className="feed-title">{title}</div>
-            <div className="feed-tags">
+            <div className="feed-title" onClick={getPost}>
+              {title}
+            </div>
+            <div className="feed-tags" onClick={getPost}>
               {tags.length > 0 &&
                 tags
                   .filter((tag, _) => tag.trim() !== "")
@@ -185,17 +193,21 @@ const FeedCard = ({
             </div>
           </div>
         </div>
-        {media.length > 0 ? (
-          <div className="media">
-            <img src={API_URL + media[0]} alt="media" />
-          </div>
-        ) : (
-          <div className="feed-description">{description}</div>
-        )}
+        <div onClick={getPost}>
+          {media.length > 0 ? (
+            <div className="media">
+              <img src={API_URL + media[0]} alt="media" />
+            </div>
+          ) : (
+            <div className="feed-description">
+              {description}
+            </div>
+          )}
+        </div>
         <Divider style={{ margin: "10px 0" }} />
         <div className="feed-footer">
           <Tooltip placement="top" title="Comments">
-            <div className="comments">
+            <div className="comments" onClick={getPost}>
               <CommentOutlined
                 style={{
                   fontSize: "20px",
@@ -206,29 +218,26 @@ const FeedCard = ({
             </div>
           </Tooltip>
           <Tooltip placement="top" title="Save Post">
-            <div className="save">
+            <div className="save" onClick={handleSavePost}>
               {isSavedPost === true ? (
                 <SaveIconColored
                   style={{ width: "21px", height: "21px", marginRight: "5px" }}
-                  onClick={handleSavePost}
                 />
               ) : (
                 <SaveIcon
                   style={{ width: "21px", height: "21px", marginRight: "5px" }}
-                  onClick={handleSavePost}
                 />
               )}
               Save
             </div>
           </Tooltip>
           <Tooltip placement="top" title="Share Post">
-            <div className="share">
+            <div className="share" onClick={showModal}>
               <ShareAltOutlined
                 style={{
                   fontSize: "20px",
                   marginRight: "5px",
                 }}
-                onClick={showModal}
               />
               Share
             </div>
