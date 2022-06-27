@@ -1,6 +1,8 @@
 #root{
     background-color: #DAE0E6;
-    height: 1000vh;
+    height: 100%;
+    overflow: auto;
+    position: relative;
 }
 .btn-bg-gradient {
     background: $button-gradient-color;

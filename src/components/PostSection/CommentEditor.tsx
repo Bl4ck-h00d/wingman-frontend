@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Button, Form, Input, Tooltip } from "antd";
-import { useAppSelector } from "src/redux/hooks";
+import { useAppSelector, useAppDispatch } from "src/redux/hooks";
 import { ReactComponent as AnonymousIcon } from "../../assets/img/people.svg";
 import { ReactComponent as AnonymousIconColored } from "../../assets/img/avatar.svg";
 import Notification from "../Utils/Notification";
 import axios from "src/utils/axiosConfig";
+import { setEditComment } from "src/redux/comment";
 
 const { TextArea } = Input;
 
@@ -12,11 +13,23 @@ const CommentEditor = ({ postId, addComment }) => {
   const { token, isLoggedIn, username } = useAppSelector(
     (state) => state.authModal
   );
+  const { editComment, editingCommentId, editingComment, editingPostId } =
+    useAppSelector((state) => state.commentModal);
+  const commentRef = useRef(null);
+  const dispatch = useAppDispatch();
 
   const [submitting, setSubmitting] = useState(false);
   const [newComment, setNewComment] = useState("");
   const [anonymousComment, setAnonymousComment] = useState(false);
 
+  useEffect(() => {
+    if (editComment) {
+      commentRef.current.focus();
+      setNewComment(editingComment);
+    } else {
+      setNewComment("");
+    }
+  }, [editComment]);
   const postComment = async (values) => {
     try {
       const result = await axios.post("/api/comments", JSON.stringify(values), {
@@ -27,6 +40,32 @@ const CommentEditor = ({ postId, addComment }) => {
         withCredentials: true,
       });
       setSubmitting(false);
+    } catch (error) {
+      setSubmitting(false);
+      console.log(error); //donot remove (debugging purpose)
+      Notification("error", "Error", "An Error occurred");
+    }
+  };
+
+  const updateComment = async (values) => {
+    try {
+      const result = await axios.put(
+        `/api/update-comment/${editingCommentId}`,
+        JSON.stringify(values),
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        }
+      );
+      setSubmitting(false);
+      Notification(
+        "success",
+        "Edited Successfully",
+        "Please Refresh the page to see the changes"
+      );
     } catch (error) {
       setSubmitting(false);
       console.log(error); //donot remove (debugging purpose)
@@ -45,7 +84,10 @@ const CommentEditor = ({ postId, addComment }) => {
     if (!loginCheck()) {
       return;
     }
-    if (!newComment || newComment.trim() === "") return;
+    if (!newComment || newComment.trim() === "") {
+      Notification("warning", "Warning", "Comment cannot be empy!");
+      return;
+    };
 
     setSubmitting(true);
 
@@ -58,9 +100,17 @@ const CommentEditor = ({ postId, addComment }) => {
       anonymous: anonymousComment,
     };
 
-    postComment(values);
+    if (!editComment) {
+      postComment(values);
+      values["id"] = 99999;
+      values["ratings"] = 0;
 
-    addComment((prevState) => [...prevState, values]);
+      addComment((prevState) => [...prevState, values]);
+    } else {
+      values["commentId"] = editingCommentId;
+      updateComment(values);
+      dispatch(setEditComment(false));
+    }
   };
 
   const handleChange = (e) => {
@@ -71,12 +121,14 @@ const CommentEditor = ({ postId, addComment }) => {
     <div className="comment-input-container">
       <Form.Item>
         <TextArea
+          ref={commentRef}
           className="comment-textarea"
           placeholder="Comment on the post..."
           rows={4}
           onChange={handleChange}
           value={newComment}
         />
+
         <Tooltip placement="top" title="Comment Anonymously">
           <div
             className="comment-anonymous"
@@ -94,8 +146,17 @@ const CommentEditor = ({ postId, addComment }) => {
           type="primary"
           className="comment-btn"
         >
-          Add Comment
+          {editComment ? "Edit Comment" : "Add Comment"}
         </Button>
+        {editComment && (
+          <Button
+            onClick={() => dispatch(setEditComment(false))}
+            className="edit-btn"
+            danger
+          >
+            Cancel
+          </Button>
+        )}
       </Form.Item>
     </div>
   );

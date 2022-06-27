@@ -52,7 +52,7 @@ const auth_modal = createSlice({
     },
     setVerified: (state) => {
       state.verified = true;
-    },
+    }
   },
 });
 

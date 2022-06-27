@@ -90,6 +90,8 @@ const FeedCard = ({
       setUserVote(0);
       newUserVote = 0;
     }
+    setRatingsCount((prevState) => prevState + newUserVote);
+
     updateRatings(newUserVote);
   };
 
@@ -104,8 +106,10 @@ const FeedCard = ({
       newUserVote = -1;
     } else {
       setUserVote(0);
-      newUserVote = 1;
+      newUserVote = 0;
     }
+    setRatingsCount((prevState) => prevState + newUserVote);
+
     updateRatings(newUserVote);
   };
 

@@ -1,8 +1,9 @@
 .post-container-parent {
   position: absolute;
   left: 20%;
-  top: 20%;
-  min-height: 100vh;
+  top: 15%;
+  height: 100vh;
+  // min-height: 100vh;
 }
 .post-container {
   background-color: white;
@@ -110,6 +111,41 @@
       height: 100%;
     }
   }
+
+     .post-footer {
+       padding: 0 20px;
+       display: flex;
+       align-items: center;
+       font-family: $base-font;
+       font-size: 14px;
+       color: #787c7e;
+       gap: 30px;
+  
+       .comments {
+         display: flex;
+         align-items: center;
+         padding: 2px;
+       }
+  
+       .save {
+         display: flex;
+         align-items: center;
+         padding: 3px;
+         cursor: pointer;
+       }
+  
+       .share {
+         display: flex;
+         align-items: center;
+         padding: 3px;
+         cursor: pointer;
+       }
+  
+       .save:hover,
+       .share:hover {
+         background-color: rgb(210, 205, 205);
+       }
+     }
 }
 
 .post-comments-container {
@@ -123,6 +159,18 @@
     font-family: $base-font;
     background-image: $button-gradient-color;
     border-radius: 5px;
+    margin-bottom: 20px;
+  }
+  .edit-btn{
+    font-family: $base-font;
+    background-color: transparent;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      margin-left: 30px;
+  }
+  .edit-btn:hover{
+    background-color: red;
+    color: white;
   }
   .comment-textarea {
     border-radius: 4px;
@@ -140,7 +188,8 @@
     width: 100%;
     font-family: $base-font;
     border-radius: 4px;
-
+    position: relative;
+    bottom: 20px;
     padding: 20px;
 
     .ant-list-header {
@@ -176,4 +225,10 @@
       cursor: pointer;
     }
   }
+}
+
+.loader{
+  position: absolute;
+  top: 50%;
+  left: 50%;
 }

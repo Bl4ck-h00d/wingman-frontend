@@ -1,13 +1,19 @@
 import React, { useState } from "react";
 import moment from "moment";
-import { Comment, List, Tooltip, Avatar } from "antd";
+import { Comment, Modal, Space, Button, Tooltip, Avatar } from "antd";
 import Notification from "../Utils/Notification";
 import axios from "src/utils/axiosConfig";
-import { useAppSelector } from "src/redux/hooks";
+import { useAppDispatch, useAppSelector } from "src/redux/hooks";
 import { ReactComponent as DownvoteIcon } from "../../assets/img/downvote.svg";
 import { ReactComponent as UpvoteIcon } from "../../assets/img/upvote.svg";
 import { ReactComponent as UpvoteIconColored } from "../../assets/img/upvote-colored.svg";
 import { ReactComponent as DownvoteIconColored } from "../../assets/img/downvote-colored.svg";
+import {
+  EditOutlined,
+  DeleteOutlined,
+  ExclamationCircleOutlined,
+} from "@ant-design/icons";
+import { setCurrentComment, setEditComment } from "src/redux/comment";
 
 //Utility Stuff
 const randomColor = [
@@ -39,13 +45,26 @@ const getTimeDifference = (timestamp) => {
 
 const CommentComponent = ({ comment, ratings, vote, postId }) => {
   const randIndex = Number(comment.id) % randomColor.length;
+  const { editComment } = useAppSelector((state) => state.commentModal);
+  const dispatch = useAppDispatch();
 
+  const handleEditComment = () => {
+    dispatch(setEditComment(true));
+    dispatch(
+      setCurrentComment({
+        editingCommentId: comment.id,
+        editingComment: comment.comment,
+        editingPostId: postId,
+      })
+    );
+  };
   const { token, isLoggedIn, username } = useAppSelector(
     (state) => state.authModal
   );
 
   const [ratingsCount, setRatingsCount] = useState(Number(comment.ratings));
   const [userVote, setUserVote] = useState(Number(vote));
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
 
   const loginCheck = () => {
     if (!isLoggedIn) {
@@ -103,43 +122,72 @@ const CommentComponent = ({ comment, ratings, vote, postId }) => {
     updateRatings(newUserVote, comment.id);
   };
 
-  const renderAction = [
-    <div className="comment-ratings">
-      {userVote === 1 ? (
-        <>
-          <UpvoteIconColored
-            className="upvoteIcon"
-            style={{ width: "17px", height: "17px" }}
-            onClick={handleUpvote}
-          />
-        </>
-      ) : (
-        <>
-          <UpvoteIcon
-            className="upvoteIcon"
-            style={{ width: "17px", height: "17px" }}
-            onClick={handleUpvote}
-          />
-        </>
-      )}
+  const handleDeleteComment = () => {
+    setDeleteModalVisible(true);
+  };
 
-      {ratingsCount}
-      {userVote === -1 ? (
-        <>
-          <DownvoteIconColored
-            className="downvoteIcon"
-            style={{ width: "17px", height: "17px" }}
-            onClick={handleDownvote}
+  const hideModal = () => {
+    setDeleteModalVisible(false);
+  };
+  const renderAction = [
+    <div style={{ display: "flex" }}>
+      <div className="comment-ratings">
+        {userVote === 1 ? (
+          <>
+            <UpvoteIconColored
+              className="upvoteIcon"
+              style={{ width: "17px", height: "17px" }}
+              onClick={handleUpvote}
+            />
+          </>
+        ) : (
+          <>
+            <UpvoteIcon
+              className="upvoteIcon"
+              style={{ width: "17px", height: "17px" }}
+              onClick={handleUpvote}
+            />
+          </>
+        )}
+
+        {ratingsCount}
+        {userVote === -1 ? (
+          <>
+            <DownvoteIconColored
+              className="downvoteIcon"
+              style={{ width: "17px", height: "17px" }}
+              onClick={handleDownvote}
+            />
+          </>
+        ) : (
+          <>
+            <DownvoteIcon
+              className="downvoteIcon"
+              style={{ width: "17px", height: "17px" }}
+              onClick={handleDownvote}
+            />
+          </>
+        )}
+      </div>
+      {comment["author"] === username ? (
+        <Tooltip placement="top" title="Edit comment">
+          <EditOutlined
+            onClick={handleEditComment}
+            style={{ fontSize: "19px", cursor: "pointer" }}
           />
-        </>
+        </Tooltip>
       ) : (
-        <>
-          <DownvoteIcon
-            className="downvoteIcon"
-            style={{ width: "17px", height: "17px" }}
-            onClick={handleDownvote}
+        <></>
+      )}
+      {comment["author"] === username ? (
+        <Tooltip placement="top" title="Delete comment">
+          <DeleteOutlined
+            onClick={handleDeleteComment}
+            style={{ fontSize: "19px", marginLeft: "20px", cursor: "pointer" }}
           />
-        </>
+        </Tooltip>
+      ) : (
+        <></>
       )}
     </div>,
   ];
@@ -166,6 +214,22 @@ const CommentComponent = ({ comment, ratings, vote, postId }) => {
     );
   };
 
+  const deleteComment = async (commentId) => {
+    hideModal();
+    try {
+      const response = await axios.delete(`/api/delete-comment/${commentId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      Notification("success", "Successfull", "Comment deleted successfully");
+    } catch (error) {
+      console.log(error);
+      Notification("error", "Error", "An error occurred");
+    }
+  };
+
   return (
     <>
       <Comment
@@ -185,6 +249,16 @@ const CommentComponent = ({ comment, ratings, vote, postId }) => {
         content={comment["comment"]}
         datetime={renderTimestamp(comment["timestamp"])}
       />
+      <Modal
+        title={"Confirm"}
+        visible={deleteModalVisible}
+        onOk={() => deleteComment(comment.id)}
+        onCancel={hideModal}
+        okText="Confirm"
+        cancelText="Cancel"
+      >
+        <p>Are you sure you want to delete this comment?</p>
+      </Modal>
     </>
   );
 };
