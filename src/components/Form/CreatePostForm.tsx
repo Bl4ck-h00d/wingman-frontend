@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button, Switch, Form, Input, Divider, Spin, notification } from "antd";
 import {
@@ -14,10 +14,15 @@ import { ImageEditorModal } from "../Editor/ImageEditorModal";
 import axios from "src/utils/axiosConfig";
 import Notification from "../Utils/Notification";
 import { useAppSelector } from "src/redux/hooks";
+import { useNavigate } from "react-router-dom";
 const { TextArea } = Input;
 
 const CreatePost = () => {
+  const navigate = useNavigate();
   const { isLoggedIn, token } = useAppSelector((state) => state.authModal);
+  const { editingPost, currentPost } = useAppSelector(
+    (state) => state.postModal
+  );
   const [submitLoader, setSubmitLoader] = useState<boolean>(false);
   const [tags, setTags] = useState<string[]>([]);
   const [postAnonymously, setPostAnonymously] = useState<boolean>(false);
@@ -32,6 +37,14 @@ const CreatePost = () => {
       uri: null,
     },
   });
+
+  useEffect(() => {
+    if (editingPost) {
+      setTags([...currentPost.tags]);
+      console.log(currentPost.tags);
+      console.log(tags);
+    }
+  }, [editingPost]);
 
   const saveEditImage = (file, index) => {
     const newImageList = images;
@@ -99,21 +112,49 @@ const CreatePost = () => {
       formData.append("images", file, file.name);
     });
 
-    try {
-      //Post the form data to ther server
-      const result = await axios.post("/api/create-post", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setSubmitLoader(false);
-      // console.log(result.data); //donot remove (debugging purpose)
-      Notification("success", "Success", "Post created successfully");
-    } catch (error) {
-      setSubmitLoader(false);
-      console.log(error); //donot remove (debugging purpose)
-      Notification("error", "Error", error["message"]);
+    if (!editingPost) {
+      try {
+        //Post the form data to ther server
+        const result = await axios.post("/api/create-post", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setSubmitLoader(false);
+        // console.log(result.data); //donot remove (debugging purpose)
+        Notification("success", "Success", "Post created successfully");
+      } catch (error) {
+        setSubmitLoader(false);
+        console.log(error); //donot remove (debugging purpose)
+        Notification("error", "Error", error["message"]);
+      }
+    } else {
+      if (!currentPost.postId) {
+        Notification("error", "Error", "An error occurred");
+        return;
+      }
+      try {
+        //Post the form data to ther server
+        const result = await axios.put(
+          `/api/update-post/${currentPost.postId}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setSubmitLoader(false);
+        // console.log(result.data); //donot remove (debugging purpose)
+        navigate('/');
+        Notification("success", "Success", "Post Edited successfully");
+      } catch (error) {
+        setSubmitLoader(false);
+        console.log(error); //donot remove (debugging purpose)
+        Notification("error", "Error", "An error occurred");
+      }
     }
   };
 
@@ -133,12 +174,14 @@ const CreatePost = () => {
       exit={{ opacity: 0, transition: { duration: 0.2 } }}
       className="create-post-container"
     >
-      <h1 className="heading">Create a new post!</h1>
+      <h1 className="heading">
+        {editingPost ? "Edit Post" : "Create a new post!"}
+      </h1>
       <Divider />
       <div className="warning-text">
         <WarningTwoTone twoToneColor="red" style={{ marginRight: "8px" }} />{" "}
-        Please make sure you respect the privacy of the others and blur the
-        names and images.
+        Please make sure you respect the privacy of others and blur the names
+        and images.
       </div>
       <Form
         className="form-container"
@@ -148,6 +191,10 @@ const CreatePost = () => {
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete="off"
+        initialValues={{
+          title: editingPost ? currentPost.title : "",
+          description: editingPost ? currentPost.description : "",
+        }}
       >
         <Form.Item
           label="Title"
@@ -190,7 +237,7 @@ const CreatePost = () => {
             },
           ]}
         >
-          <TagField setTagsProp={setTags} />
+          <TagField setTagsProp={setTags} initialTags={currentPost.tags} />
         </Form.Item>
 
         <Form.Item label="Post Anonymously" valuePropName="anonymous">

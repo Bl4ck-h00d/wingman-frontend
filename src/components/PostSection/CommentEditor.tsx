@@ -5,7 +5,7 @@ import { ReactComponent as AnonymousIcon } from "../../assets/img/people.svg";
 import { ReactComponent as AnonymousIconColored } from "../../assets/img/avatar.svg";
 import Notification from "../Utils/Notification";
 import axios from "src/utils/axiosConfig";
-import { setEditComment } from "src/redux/comment";
+import { setEditComment, setCommentUpdateReload } from "src/redux/commentModal";
 
 const { TextArea } = Input;
 
@@ -87,7 +87,7 @@ const CommentEditor = ({ postId, addComment }) => {
     if (!newComment || newComment.trim() === "") {
       Notification("warning", "Warning", "Comment cannot be empy!");
       return;
-    };
+    }
 
     setSubmitting(true);
 
@@ -109,6 +109,7 @@ const CommentEditor = ({ postId, addComment }) => {
     } else {
       values["commentId"] = editingCommentId;
       updateComment(values);
+      dispatch(setCommentUpdateReload(true));
       dispatch(setEditComment(false));
     }
   };

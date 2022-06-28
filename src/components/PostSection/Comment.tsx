@@ -8,12 +8,12 @@ import { ReactComponent as DownvoteIcon } from "../../assets/img/downvote.svg";
 import { ReactComponent as UpvoteIcon } from "../../assets/img/upvote.svg";
 import { ReactComponent as UpvoteIconColored } from "../../assets/img/upvote-colored.svg";
 import { ReactComponent as DownvoteIconColored } from "../../assets/img/downvote-colored.svg";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import {
-  EditOutlined,
-  DeleteOutlined,
-  ExclamationCircleOutlined,
-} from "@ant-design/icons";
-import { setCurrentComment, setEditComment } from "src/redux/comment";
+  setCommentUpdateReload,
+  setCurrentComment,
+  setEditComment,
+} from "src/redux/commentModal";
 
 //Utility Stuff
 const randomColor = [
@@ -199,12 +199,26 @@ const CommentComponent = ({ comment, ratings, vote, postId }) => {
         {" "}
         <div>
           {timeDifference.days !== null && timeDifference.days > 0 && (
-            <>{timeDifference.days} days go</>
+            <>
+              {timeDifference.days} day{timeDifference.days > 1 ? "s" : ""} ago
+            </>
           )}
           {timeDifference.days !== null &&
             timeDifference.days <= 0 &&
+            timeDifference.hours > 0 && (
+              <>
+                {timeDifference.hours} hour{timeDifference.hours > 1 ? "s" : ""}{" "}
+                ago
+              </>
+            )}
+          {timeDifference.days !== null &&
+            timeDifference.days <= 0 &&
+            timeDifference.hours <= 0 &&
             timeDifference.minutes > 0 && (
-              <>{timeDifference.minutes} minutes ago</>
+              <>
+                {timeDifference.minutes} minute
+                {timeDifference.minutes > 1 ? "s" : ""} ago
+              </>
             )}
           {timeDifference.days !== null &&
             timeDifference.days <= 0 &&
@@ -216,6 +230,7 @@ const CommentComponent = ({ comment, ratings, vote, postId }) => {
 
   const deleteComment = async (commentId) => {
     hideModal();
+    dispatch(setCommentUpdateReload(true));
     try {
       const response = await axios.delete(`/api/delete-comment/${commentId}`, {
         headers: {

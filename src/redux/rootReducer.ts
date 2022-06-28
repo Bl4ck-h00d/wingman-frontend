@@ -3,13 +3,16 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 
 import imageEditor from "./imageEditor";
 import authModal from "./auth";
-import commentModal from "./comment";
+import commentModal from "./commentModal";
+import postModal from "./postModal";
+
 
 
 const reducer = combineReducers({
   imageEditor,
   authModal,
-  commentModal
+  commentModal,
+  postModal
 });
 
 // reset state on logout

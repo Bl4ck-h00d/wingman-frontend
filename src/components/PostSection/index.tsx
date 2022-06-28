@@ -1,41 +1,74 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import axios from "src/utils/axiosConfig";
-import { useAppSelector } from "src/redux/hooks";
-import { Tooltip, Divider, Spin } from "antd";
+import { useAppSelector, useAppDispatch } from "src/redux/hooks";
+import { Tooltip, Divider, Spin, Dropdown, Menu, Modal } from "antd";
 import { API_URL } from "src/utils/constants";
 import Notification from "../Utils/Notification";
 import CommentEditor from "./CommentEditor";
 import CommentList from "./CommentList";
 import anonymousIcon from "src/assets/img/anonymous.png";
 import moment from "moment";
+import { useNavigate } from "react-router-dom";
+import { setCommentUpdateReload } from "src/redux/commentModal";
+import { setCurrentPost, setEditingPost } from "src/redux/postModal";
 import { ReactComponent as DownvoteIcon } from "../../assets/img/downvote.svg";
 import { ReactComponent as UpvoteIcon } from "../../assets/img/upvote.svg";
-import { ReactComponent as UpvoteIconColored } from "../../assets/img/upvote-colored.svg";
-import { ReactComponent as DownvoteIconColored } from "../../assets/img/downvote-colored.svg";
+import { ReactComponent as UpvoteIconColored } from "../../assets/img/arrow-up.svg";
+import { ReactComponent as DownvoteIconColored } from "../../assets/img/arrow-down.svg";
+import { ReactComponent as SaveIconColored } from "../../assets/img/bookmark.svg";
 import { ReactComponent as SaveIcon } from "../../assets/img/save.svg";
-import { ReactComponent as SaveIconColored } from "../../assets/img/save-colored.svg";
+
 import {
   CommentOutlined,
   ShareAltOutlined,
   EllipsisOutlined,
   LoadingOutlined,
+  EditOutlined,
+  DeleteOutlined,
 } from "@ant-design/icons";
 
 const LoadingIcon = <LoadingOutlined style={{ fontSize: 40 }} spin />;
 
 const PostSection = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { token, isLoggedIn } = useAppSelector((state) => state.authModal);
+  const { editingPost,currentPost } = useAppSelector((state) => state.postModal);
   const [loading, setLoading] = useState(true);
-  const { editComment } = useAppSelector((state) => state.commentModal);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [userVote, setUserVote] = useState(0);
+  const [commentsData, setCommentsData] = useState([]);
+  const [commentsLiked, setCommentsLiked] = useState([]);
+  const [timestamp, setTimestamp] = useState("");
+  const [timeDifference, setTimeDifference] = useState({
+    days: null,
+    hours: null,
+    minutes: null,
+  });
+  const [isSavedPost, setIsSavedPost] = useState(false);
+  const { editComment, commentUpdateReload } = useAppSelector(
+    (state) => state.commentModal
+  );
   const scrollRef = useRef(null);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (editComment) {
       scrollRef.current.scrollIntoView();
     }
   }, [editComment]);
+
+  useEffect(() => {
+    if (commentUpdateReload) {
+      setLoading(true);
+      getPostById();
+      setTimeout(() => {
+        dispatch(setCommentUpdateReload(false));
+        setLoading(false);
+      }, 1000);
+    }
+  }, [commentUpdateReload]);
   const [ratingsCount, setRatingsCount] = useState(0);
   const [post, setPost] = useState({
     id: null,
@@ -47,17 +80,8 @@ const PostSection = () => {
     userRating: 0,
     comments: null,
     tags: null,
+    anonymous: null,
   });
-  const [userVote, setUserVote] = useState(0);
-  const [commentsData, setCommentsData] = useState([]);
-  const [commentsLiked, setCommentsLiked] = useState([]);
-  const [timestamp, setTimestamp] = useState("");
-  const [timeDifference, setTimeDifference] = useState({
-    days: null,
-    hours: null,
-    minutes: null,
-  });
-  const [isSavedPost, setIsSavedPost] = useState(false);
 
   const getPostById = async () => {
     const response = await axios.get(`/api/post/${id}`, {
@@ -74,6 +98,10 @@ const PostSection = () => {
     setTimestamp(data[0]["post"][0]["timestamp"]);
   };
 
+  const hideModal = () => {
+    setModalVisible(false);
+  };
+
   const updateRatings = async (newUserVote) => {
     const response = await axios.put(
       `/api/ratings/${id}`,
@@ -84,6 +112,23 @@ const PostSection = () => {
         },
       }
     );
+  };
+
+  const deletePost = async (postId) => {
+    hideModal();
+    navigate(`/`);
+    try {
+      const response = await axios.delete(`/api/delete-post/${postId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      Notification("success", "Successfull", "Post deleted successfully");
+    } catch (error) {
+      console.log(error);
+      Notification("error", "Error", "An error occurred");
+    }
   };
 
   useEffect(() => {
@@ -165,6 +210,45 @@ const PostSection = () => {
     updateRatings(newUserVote);
   };
 
+  const handleEditPost = () => {
+    dispatch(setEditingPost(true));
+
+    const values = {
+      postId: Number(post.id),
+      title: post.title,
+      description: post.description,
+      anonymous: post.anonymous,
+      tags: post.tags,
+    };
+    setCurrentPost(dispatch(setCurrentPost(values)));
+    navigate("/post");
+  };
+
+  const menu = (
+    <Menu
+      items={[
+        {
+          key: "1",
+          label: (
+            <div onClick={handleEditPost}>
+              <EditOutlined style={{ marginRight: "10px" }} />
+              Edit Post
+            </div>
+          ),
+        },
+        {
+          key: "2",
+          label: (
+            <div onClick={() => setModalVisible(true)}>
+              <DeleteOutlined style={{ marginRight: "10px" }} />
+              Delete Post
+            </div>
+          ),
+        },
+      ]}
+    />
+  );
+
   return (
     <>
       {loading && <Spin className="loader" indicator={LoadingIcon} />}
@@ -212,54 +296,73 @@ const PostSection = () => {
               </div>
               <div>
                 <div className="post-author">
-                  {post.author !== null ? (
-                    <>
-                      <div className="post-author-avtaar">
-                        <span>{post.author.charAt(0)}</span>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <img
-                        src={anonymousIcon}
-                        alt="avtaar"
-                        width="18px"
-                        height="15px"
-                      />
-                    </>
-                  )}
-                  {post.author !== null ? (
-                    <>
-                      Posted by{" "}
-                      <span className="author-name">{post.author}</span>
-                    </>
-                  ) : (
-                    <>Anonymous</>
-                  )}
-                  <div className="post-timestamp">
-                    {timeDifference.days !== null &&
-                      timeDifference.days > 0 && (
-                        <>{timeDifference.days} days go</>
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "5px",
+                      alignItems: "center",
+                    }}
+                  >
+                    {post.author !== null ? (
+                      <>
+                        <div className="post-author-avtaar">
+                          <span>{post.author.charAt(0)}</span>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <img
+                          src={anonymousIcon}
+                          alt="avtaar"
+                          width="18px"
+                          height="15px"
+                        />
+                      </>
+                    )}
+                    {post.author !== null ? (
+                      <>
+                        Posted by{" "}
+                        <span className="author-name">{post.author}</span>
+                      </>
+                    ) : (
+                      <>Anonymous</>
+                    )}
+                    <div className="separator-dot"></div>
+                    <div className="post-timestamp">
+                      {timeDifference.days !== null && timeDifference.days > 0 && (
+                        <>
+                          {timeDifference.days} day
+                          {timeDifference.days > 1 ? "s" : ""} ago
+                        </>
                       )}
-                    {timeDifference.days !== null &&
-                      timeDifference.days <= 0 &&
-                      timeDifference.hours > 0 && (
-                        <>{timeDifference.hours} hours ago</>
-                      )}
-                    {timeDifference.days !== null &&
-                      timeDifference.days <= 0 &&
-                      timeDifference.hours <= 0 &&
-                      timeDifference.minutes > 0 && (
-                        <>{timeDifference.minutes} minutes ago</>
-                      )}
-                    {timeDifference.days !== null &&
-                      timeDifference.days <= 0 &&
-                      timeDifference.minutes <= 0 && <>a few seconds ago</>}
+                      {timeDifference.days !== null &&
+                        timeDifference.days <= 0 &&
+                        timeDifference.hours > 0 && (
+                          <>
+                            {timeDifference.hours} hour
+                            {timeDifference.hours > 1 ? "s" : ""} ago
+                          </>
+                        )}
+                      {timeDifference.days !== null &&
+                        timeDifference.days <= 0 &&
+                        timeDifference.hours <= 0 &&
+                        timeDifference.minutes > 0 && (
+                          <>
+                            {timeDifference.minutes} minute
+                            {timeDifference.minutes > 1 ? "s" : ""} ago
+                          </>
+                        )}
+                      {timeDifference.days !== null &&
+                        timeDifference.days <= 0 &&
+                        timeDifference.minutes <= 0 && <>a few seconds ago</>}
+                    </div>
                   </div>
                   <div className="header-menu" style={{ marginLeft: "55%" }}>
-                    <EllipsisOutlined
-                      style={{ fontSize: "20px", cursor: "pointer" }}
-                    />
+                    <Dropdown overlay={menu} placement="bottom">
+                      <EllipsisOutlined
+                        style={{ fontSize: "20px", cursor: "pointer" }}
+                      />
+                    </Dropdown>
                   </div>
                 </div>
                 <div className="post-title">{post.title}</div>
@@ -299,23 +402,28 @@ const PostSection = () => {
               <Tooltip placement="top" title="Save Post">
                 <div className="save" onClick={handleSavePost}>
                   {isSavedPost === true ? (
-                    <SaveIconColored
-                      style={{
-                        width: "21px",
-                        height: "21px",
-                        marginRight: "5px",
-                      }}
-                    />
+                    <>
+                      <SaveIconColored
+                        style={{
+                          width: "21px",
+                          height: "21px",
+                          marginRight: "5px",
+                        }}
+                      />
+                      Saved
+                    </>
                   ) : (
-                    <SaveIcon
-                      style={{
-                        width: "21px",
-                        height: "21px",
-                        marginRight: "5px",
-                      }}
-                    />
+                    <>
+                      <SaveIcon
+                        style={{
+                          width: "21px",
+                          height: "21px",
+                          marginRight: "5px",
+                        }}
+                        />
+                        Save
+                    </>
                   )}
-                  Save
                 </div>
               </Tooltip>
               <Tooltip placement="top" title="Share Post">
@@ -343,6 +451,18 @@ const PostSection = () => {
           </div>
         </div>
       )}
+      <Modal
+        title={"Confirm"}
+        visible={modalVisible}
+        onOk={() => deletePost(id)}
+        onCancel={hideModal}
+        okText="Confirm"
+        cancelText="Cancel"
+      >
+        <div style={{ fontFamily: "Inter", fontSize: "17px" }}>
+          Are you sure you want to delete this post?
+        </div>
+      </Modal>
     </>
   );
 };

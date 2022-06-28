@@ -4,8 +4,8 @@ import { Input, Tag, Tooltip } from "antd";
 import { TweenOneGroup } from "rc-tween-one";
 import React, { useEffect, useRef, useState } from "react";
 
-const TagField = ({ setTagsProp }) => {
-  const [tags, setTags] = useState<string[]>([]);
+const TagField = ({ setTagsProp, initialTags }) => {
+  const [tags, setTags] = useState<string[]>(initialTags);
   const [inputVisible, setInputVisible] = useState<boolean>(false);
   const [inputValue, setInputValue] = useState("");
   const inputRef = useRef<InputRef>(null);
@@ -14,6 +14,7 @@ const TagField = ({ setTagsProp }) => {
     if (inputVisible) {
       inputRef.current?.focus();
     }
+    console.log(initialTags)
   }, []);
 
   useEffect(() => {

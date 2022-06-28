@@ -4,10 +4,10 @@ import { API_URL } from "src/utils/constants";
 import anonymousIcon from "src/assets/img/anonymous.png";
 import { ReactComponent as DownvoteIcon } from "../../assets/img/downvote.svg";
 import { ReactComponent as UpvoteIcon } from "../../assets/img/upvote.svg";
-import { ReactComponent as UpvoteIconColored } from "../../assets/img/upvote-colored.svg";
-import { ReactComponent as DownvoteIconColored } from "../../assets/img/downvote-colored.svg";
+import { ReactComponent as UpvoteIconColored } from "../../assets/img/arrow-up.svg";
+import { ReactComponent as DownvoteIconColored } from "../../assets/img/arrow-down.svg";
+import { ReactComponent as SaveIconColored } from "../../assets/img/bookmark.svg";
 import { ReactComponent as SaveIcon } from "../../assets/img/save.svg";
-import { ReactComponent as SaveIconColored } from "../../assets/img/save-colored.svg";
 import { CommentOutlined, ShareAltOutlined } from "@ant-design/icons";
 import axios from "src/utils/axiosConfig";
 import { useAppSelector } from "src/redux/hooks";
@@ -203,9 +203,7 @@ const FeedCard = ({
               <img src={API_URL + media[0]} alt="media" />
             </div>
           ) : (
-            <div className="feed-description">
-              {description}
-            </div>
+            <div className="feed-description">{description}</div>
           )}
         </div>
         <Divider style={{ margin: "10px 0" }} />
@@ -224,15 +222,28 @@ const FeedCard = ({
           <Tooltip placement="top" title="Save Post">
             <div className="save" onClick={handleSavePost}>
               {isSavedPost === true ? (
-                <SaveIconColored
-                  style={{ width: "21px", height: "21px", marginRight: "5px" }}
-                />
+                <>
+                  <SaveIconColored
+                    style={{
+                      width: "21px",
+                      height: "21px",
+                      marginRight: "5px",
+                    }}
+                  />
+                  Saved
+                </>
               ) : (
-                <SaveIcon
-                  style={{ width: "21px", height: "21px", marginRight: "5px" }}
-                />
+                <>
+                  <SaveIcon
+                    style={{
+                      width: "21px",
+                      height: "21px",
+                      marginRight: "5px",
+                    }}
+                  />
+                  Save
+                </>
               )}
-              Save
             </div>
           </Tooltip>
           <Tooltip placement="top" title="Share Post">
