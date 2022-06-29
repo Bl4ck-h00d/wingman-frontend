@@ -33,8 +33,9 @@ const LoadingIcon = <LoadingOutlined style={{ fontSize: 40 }} spin />;
 const PostSection = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { token, isLoggedIn } = useAppSelector((state) => state.authModal);
-  const { editingPost,currentPost } = useAppSelector((state) => state.postModal);
+  const { token, isLoggedIn, username } = useAppSelector(
+    (state) => state.authModal
+  );
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [userVote, setUserVote] = useState(0);
@@ -46,10 +47,26 @@ const PostSection = () => {
     hours: null,
     minutes: null,
   });
-  const [isSavedPost, setIsSavedPost] = useState(false);
   const { editComment, commentUpdateReload } = useAppSelector(
     (state) => state.commentModal
   );
+  const [ratingsCount, setRatingsCount] = useState(0);
+  const [post, setPost] = useState({
+    id: null,
+    title: null,
+    description: null,
+    author: null,
+    media: null,
+    ratings: 0,
+    userRating: 0,
+    comments: null,
+    tags: null,
+    anonymous: null,
+    edited: null,
+  });
+
+  const [isSavedPost, setIsSavedPost] = useState(false);
+
   const scrollRef = useRef(null);
   const dispatch = useAppDispatch();
 
@@ -69,19 +86,6 @@ const PostSection = () => {
       }, 1000);
     }
   }, [commentUpdateReload]);
-  const [ratingsCount, setRatingsCount] = useState(0);
-  const [post, setPost] = useState({
-    id: null,
-    title: null,
-    description: null,
-    author: null,
-    media: null,
-    ratings: 0,
-    userRating: 0,
-    comments: null,
-    tags: null,
-    anonymous: null,
-  });
 
   const getPostById = async () => {
     const response = await axios.get(`/api/post/${id}`, {
@@ -91,10 +95,12 @@ const PostSection = () => {
     });
 
     const data = response.data;
+
     setPost({ ...data[0]["post"][0] });
     setUserVote(Number(data[1]["userRating"]));
-    setCommentsLiked(data[2]["comments"].pop()["commentsLiked"]);
-    setCommentsData(data[2]["comments"]);
+    setIsSavedPost(data[2]["postSaved"]);
+    setCommentsLiked(data[3]["comments"].pop()["commentsLiked"]);
+    setCommentsData(data[3]["comments"]);
     setTimestamp(data[0]["post"][0]["timestamp"]);
   };
 
@@ -167,10 +173,27 @@ const PostSection = () => {
     return true;
   };
 
+  const savePost = async (postId, save) => {
+    const response = await axios.post(
+      `/api/save/${id}`,
+      { savePost: save },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  };
   const handleSavePost = () => {
     if (!loginCheck()) {
       return;
     }
+    try {
+      savePost(id, !isSavedPost);
+    } catch (error) {
+      console.log(error);
+    }
+
     setIsSavedPost((prevState) => !prevState);
   };
 
@@ -356,14 +379,17 @@ const PostSection = () => {
                         timeDifference.days <= 0 &&
                         timeDifference.minutes <= 0 && <>a few seconds ago</>}
                     </div>
+                    {post.edited && <div> (edited)</div>}
                   </div>
-                  <div className="header-menu" style={{ marginLeft: "55%" }}>
-                    <Dropdown overlay={menu} placement="bottom">
-                      <EllipsisOutlined
-                        style={{ fontSize: "20px", cursor: "pointer" }}
-                      />
-                    </Dropdown>
-                  </div>
+                  {post.author === username && (
+                    <div className="header-menu">
+                      <Dropdown overlay={menu} placement="bottom">
+                        <EllipsisOutlined
+                          style={{ fontSize: "20px", cursor: "pointer" }}
+                        />
+                      </Dropdown>
+                    </div>
+                  )}
                 </div>
                 <div className="post-title">{post.title}</div>
                 <div className="post-tags">
@@ -420,8 +446,8 @@ const PostSection = () => {
                           height: "21px",
                           marginRight: "5px",
                         }}
-                        />
-                        Save
+                      />
+                      Save
                     </>
                   )}
                 </div>

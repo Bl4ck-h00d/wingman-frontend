@@ -188,6 +188,8 @@
   .comment-textarea {
     border-radius: 4px;
     padding-bottom: 30px;
+    font-family: $base-font;
+    font-size: 16px;
   }
   .comment-anonymous {
     position: absolute;
@@ -195,6 +197,19 @@
     right: 15px;
     cursor: pointer;
   }
+
+  .emoji-picker{
+    position: absolute;
+    z-index: 50;
+    cursor: pointer;
+  }
+
+     .emoji-picker-icon {
+       position: absolute;
+       bottom: 5px;
+       left: 15px;
+       cursor: pointer;
+     }
 
   .comment-list-container {
     background-color: white;

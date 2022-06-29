@@ -6,6 +6,7 @@ import { useAppSelector } from "src/redux/hooks";
 const FeedContainer = () => {
   const [feed, setFeed] = useState([]);
   const [postRatings, setPostRatings] = useState([]);
+  const [postSaved, setPostSaved] = useState([]);
   const { isLoggedIn, token } = useAppSelector((state) => state.authModal);
 
   const getFeed = async () => {
@@ -15,20 +16,27 @@ const FeedContainer = () => {
         Authorization: `Bearer ${token}`,
       },
     });
+    const postSavedData = response.data.pop();
     const postRatingData = response.data.pop();
-    const data = response.data;
 
+    const data = response.data;
     setPostRatings([...postRatingData.postsLiked]);
+    setPostSaved([...postSavedData.postsSaved]);
 
     let tempFeed = [];
-    for (let post = 0; post < data.length; post++) {
-      let tempPost = data[post];
+    for (let i = 0; i < data.length; i++) {
+      let tempPost = data[i];
       tempPost["userRating"] = 0;
-      for (let rated = 0; rated < postRatingData.postsLiked.length; rated++) {
-        if (tempPost.id === postRatingData.postsLiked[rated].postid) {
-          tempPost["userRating"] = Number(
-            postRatingData.postsLiked[rated].rating
-          );
+      for (let j = 0; j < postRatingData.postsLiked.length; j++) {
+        if (tempPost.id === postRatingData.postsLiked[j].postid) {
+          tempPost["userRating"] = Number(postRatingData.postsLiked[j].rating);
+          break;
+        }
+      }
+      tempPost["saved"] = false;
+      for (let j = 0; j < postSavedData.postsSaved.length; j++) {
+        if (tempPost.id === postSavedData.postsSaved[j].postid) {
+          tempPost["saved"] = true;
           break;
         }
       }
@@ -55,6 +63,7 @@ const FeedContainer = () => {
             userRating={post.userRating}
             comments={post.comments}
             tags={post.tags}
+            saved={post.saved}
           />
         ))}
       </div>

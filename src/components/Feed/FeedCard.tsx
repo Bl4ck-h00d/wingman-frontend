@@ -26,6 +26,7 @@ interface FeedCardInterface {
   userRating?: number;
   comments?: number | null;
   tags?: string[] | null;
+  saved?: boolean;
 }
 
 const FeedCard = ({
@@ -38,10 +39,11 @@ const FeedCard = ({
   userRating,
   comments,
   tags,
+  saved,
 }: FeedCardInterface) => {
   const [ratingsCount, setRatingsCount] = useState(Number(ratings));
   const [userVote, setUserVote] = useState(Number(userRating)); //1,-1,0
-  const [isSavedPost, setIsSavedPost] = useState(false);
+  const [isSavedPost, setIsSavedPost] = useState(saved);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { isLoggedIn, token } = useAppSelector((state) => state.authModal);
   const navigate = useNavigate();
@@ -113,10 +115,27 @@ const FeedCard = ({
     updateRatings(newUserVote);
   };
 
+  const savePost = async (postId, save) => {
+    const response = await axios.post(
+      `/api/save/${id}`,
+      { savePost: save },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  };
   const handleSavePost = () => {
     if (!loginCheck()) {
       return;
     }
+    try {
+      savePost(id, !isSavedPost);
+    } catch (error) {
+      console.log(error);
+    }
+
     setIsSavedPost((prevState) => !prevState);
   };
 

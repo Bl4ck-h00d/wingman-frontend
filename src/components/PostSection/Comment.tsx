@@ -8,6 +8,7 @@ import { ReactComponent as DownvoteIcon } from "../../assets/img/downvote.svg";
 import { ReactComponent as UpvoteIcon } from "../../assets/img/upvote.svg";
 import { ReactComponent as UpvoteIconColored } from "../../assets/img/upvote-colored.svg";
 import { ReactComponent as DownvoteIconColored } from "../../assets/img/downvote-colored.svg";
+import { ReactComponent as AnonymousIconColored } from "../../assets/img/avatar.svg";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import {
   setCommentUpdateReload,
@@ -65,6 +66,7 @@ const CommentComponent = ({ comment, ratings, vote, postId }) => {
   const [ratingsCount, setRatingsCount] = useState(Number(comment.ratings));
   const [userVote, setUserVote] = useState(Number(vote));
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [edited, setEdited] = useState(comment.edited);
 
   const loginCheck = () => {
     if (!isLoggedIn) {
@@ -197,7 +199,7 @@ const CommentComponent = ({ comment, ratings, vote, postId }) => {
     return (
       <>
         {" "}
-        <div>
+        <div style={{display:"flex", gap:"5px"}}>
           {timeDifference.days !== null && timeDifference.days > 0 && (
             <>
               {timeDifference.days} day{timeDifference.days > 1 ? "s" : ""} ago
@@ -223,6 +225,7 @@ const CommentComponent = ({ comment, ratings, vote, postId }) => {
           {timeDifference.days !== null &&
             timeDifference.days <= 0 &&
             timeDifference.minutes <= 0 && <>a few seconds ago</>}
+          {edited && <div>(edited)</div>}
         </div>
       </>
     );
@@ -248,18 +251,22 @@ const CommentComponent = ({ comment, ratings, vote, postId }) => {
   return (
     <>
       <Comment
-        author={comment["author"]}
+        author={comment["author"] ? comment["author"] : "Anonymous"}
         actions={renderAction}
         avatar={
-          <Avatar
-            style={{
-              color: randomColor[randIndex].color,
-              backgroundColor: randomColor[randIndex].backgroundColor,
-              textTransform: "capitalize",
-            }}
-          >
-            {comment["author"].charAt(0)}
-          </Avatar>
+          comment["author"] ? (
+            <Avatar
+              style={{
+                color: randomColor[randIndex].color,
+                backgroundColor: randomColor[randIndex].backgroundColor,
+                textTransform: "capitalize",
+              }}
+            >
+              {comment["author"].charAt(0)}
+            </Avatar>
+          ) : (
+            <AnonymousIconColored />
+          )
         }
         content={comment["comment"]}
         datetime={renderTimestamp(comment["timestamp"])}

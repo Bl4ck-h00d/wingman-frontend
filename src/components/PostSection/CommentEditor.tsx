@@ -6,6 +6,8 @@ import { ReactComponent as AnonymousIconColored } from "../../assets/img/avatar.
 import Notification from "../Utils/Notification";
 import axios from "src/utils/axiosConfig";
 import { setEditComment, setCommentUpdateReload } from "src/redux/commentModal";
+import Emojis from "../EmojiPicker";
+import { SmileOutlined } from "@ant-design/icons";
 
 const { TextArea } = Input;
 
@@ -17,7 +19,8 @@ const CommentEditor = ({ postId, addComment }) => {
     useAppSelector((state) => state.commentModal);
   const commentRef = useRef(null);
   const dispatch = useAppDispatch();
-
+  const [emojisVisible, setEmojisVisible] = useState(false);
+  const [cursorPosition, setCursorPosition] = useState();
   const [submitting, setSubmitting] = useState(false);
   const [newComment, setNewComment] = useState("");
   const [anonymousComment, setAnonymousComment] = useState(false);
@@ -118,18 +121,45 @@ const CommentEditor = ({ postId, addComment }) => {
     setNewComment((prevState) => e.target.value);
   };
 
+  const showEmoji = () => {
+    commentRef.current.focus();
+    setEmojisVisible(!emojisVisible);
+  };
+  const pickEmoji = (e, { emoji }) => {
+    const ref = commentRef.current.resizableTextArea.textArea;
+    ref.focus();
+    const start = newComment.substring(0, ref.selectionStart);
+    const end = newComment.substring(ref.selectionStart);
+    const text = start + emoji + end;
+    setNewComment(text);
+    setCursorPosition(start.length + emoji.length);
+  };
+
+  useEffect(() => {
+    commentRef.current.resizableTextArea.textArea.selectionEnd = cursorPosition;
+  }, [cursorPosition]);
+
   return (
     <div className="comment-input-container">
       <Form.Item>
         <TextArea
           ref={commentRef}
+          id="comment-textarea"
           className="comment-textarea"
           placeholder="Comment on the post..."
           rows={4}
           onChange={handleChange}
           value={newComment}
         />
+        {emojisVisible && (
+          <div className="emoji-picker">
+            <Emojis pickEmoji={pickEmoji} />
+          </div>
+        )}
 
+        <div className="emoji-picker-icon" onClick={showEmoji}>
+          <SmileOutlined style={{fontSize:"20px"}}/>
+        </div>
         <Tooltip placement="top" title="Comment Anonymously">
           <div
             className="comment-anonymous"

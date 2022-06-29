@@ -41,8 +41,6 @@ const CreatePost = () => {
   useEffect(() => {
     if (editingPost) {
       setTags([...currentPost.tags]);
-      console.log(currentPost.tags);
-      console.log(tags);
     }
   }, [editingPost]);
 
@@ -237,7 +235,7 @@ const CreatePost = () => {
             },
           ]}
         >
-          <TagField setTagsProp={setTags} initialTags={currentPost.tags} />
+          <TagField setTagsProp={setTags} initialTags={currentPost && currentPost.tags?currentPost.tags:tags} />
         </Form.Item>
 
         <Form.Item label="Post Anonymously" valuePropName="anonymous">
