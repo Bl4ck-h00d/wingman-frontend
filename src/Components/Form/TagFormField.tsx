@@ -14,7 +14,6 @@ const TagField = ({ setTagsProp, initialTags }) => {
     if (inputVisible) {
       inputRef.current?.focus();
     }
-    console.log(initialTags)
   }, []);
 
   useEffect(() => {

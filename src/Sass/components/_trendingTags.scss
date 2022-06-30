@@ -8,6 +8,7 @@
   border-radius: 8px;
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 
+
   .heading {
     font-family: $base-font;
     font-size: 18px;
@@ -20,4 +21,26 @@
   .ant-divider-horizontal {
     margin: 0 !important;
   }
+
+  .tags-list{
+    padding: 10px;
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    overflow: hidden;
+    align-content: space-between;
+  }
+
+    .trending-tags {
+      background-color: #1890ff;
+      color: white;
+      border-radius: 10px;
+      height: 27px;
+      width: fit-content;
+      padding: 2px 8px;
+      font-family: $base-font;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+    }
 }

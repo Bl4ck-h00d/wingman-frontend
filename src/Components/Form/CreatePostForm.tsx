@@ -23,6 +23,7 @@ const loaderIcon = (
 
 const CreatePost = () => {
   //STATE DEFINITIONS
+  const [form] = Form.useForm();
   const navigate = useNavigate();
   const { isLoggedIn, token } = useAppSelector((state) => state.authModal);
   const { editingPost, currentPost } = useAppSelector(
@@ -167,12 +168,14 @@ const CreatePost = () => {
 
     if (!editingPost) {
       createPost(formData);
+      form.resetFields();
     } else {
       if (!currentPost.postId) {
         Notification("error", "Error", "An error occurred");
         return;
       }
       editPost(formData);
+      form.resetFields();
     }
   };
 
@@ -200,6 +203,7 @@ const CreatePost = () => {
         and images.
       </div>
       <Form
+        form={form}
         className="form-container"
         name="newPost"
         labelCol={{ span: 4 }}

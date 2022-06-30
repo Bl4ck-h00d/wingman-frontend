@@ -18,6 +18,8 @@ import { ReactComponent as UpvoteIconColored } from "../../Assets/img/arrow-up.s
 import { ReactComponent as DownvoteIconColored } from "../../Assets/img/arrow-down.svg";
 import { ReactComponent as SaveIconColored } from "../../Assets/img/bookmark.svg";
 import { ReactComponent as SaveIcon } from "../../Assets/img/save.svg";
+import { Link } from "react-router-dom";
+import AddPostButton from "../Home/AddPostButton";
 
 import {
   CommentOutlined,
@@ -63,7 +65,7 @@ const PostSection = () => {
     comments: null,
     tags: null,
     anonymous: null,
-    edited: null,
+    edited: false,
   });
 
   const [isSavedPost, setIsSavedPost] = useState(false);
@@ -82,11 +84,16 @@ const PostSection = () => {
     const data = response.data;
 
     setPost({ ...data[0]["post"][0] });
-    setUserVote(Number(data[1]["userRating"]));
-    setIsSavedPost(data[2]["postSaved"]);
-    setCommentsLiked(data[3]["comments"].pop()["commentsLiked"]);
-    setCommentsData(data[3]["comments"]);
-    setTimestamp(data[0]["post"][0]["timestamp"]);
+    if (isLoggedIn) {
+      setUserVote(Number(data[1]["userRating"]));
+      setIsSavedPost(data[2]["postSaved"]);
+      setCommentsLiked(data[3]["comments"].pop()["commentsLiked"]);
+      setCommentsData(data[3]["comments"]);
+      setTimestamp(data[0]["post"][0]["timestamp"]);
+    } else {
+      setCommentsData(data[1]["comments"]);
+      setTimestamp(data[0]["post"][0]["timestamp"]);
+    }
   };
 
   const updateRatings = async (newUserVote) => {
@@ -181,16 +188,16 @@ const PostSection = () => {
     setModalVisible(false);
   };
 
-  const loginCheck = () => {
+  const loginCheck = (message) => {
     if (!isLoggedIn) {
-      Notification("warning", "Warning", "Please Login before creating a post");
+      Notification("warning", "Warning", `Please Login ${message}`);
       return false;
     }
     return true;
   };
 
   const handleSavePost = () => {
-    if (!loginCheck()) {
+    if (!loginCheck("to save the post")) {
       return;
     }
     try {
@@ -203,7 +210,7 @@ const PostSection = () => {
   };
 
   const handleUpvote = () => {
-    if (!loginCheck()) {
+    if (!loginCheck("to vote the post")) {
       return;
     }
     let newUserVote = 0;
@@ -221,7 +228,7 @@ const PostSection = () => {
   };
 
   const handleDownvote = () => {
-    if (!loginCheck()) {
+    if (!loginCheck("to vote the post")) {
       return;
     }
     setRatingsCount((prevState) => prevState - userVote);
@@ -482,6 +489,9 @@ const PostSection = () => {
           </div>
         </div>
       )}
+      <Link to="/post">
+        <AddPostButton />
+      </Link>
       <Modal
         title={"Confirm"}
         visible={modalVisible}

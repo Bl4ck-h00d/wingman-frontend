@@ -49,6 +49,13 @@
     align-items: center;
     margin-bottom: 8px;
   }
+    .separator-dot {
+      margin-left: 2px;
+      background-color: #959899;
+      border-radius: 50%;
+      width: 3px;
+      height: 3px;
+    }
   .feed-title {
     font-family: $base-font;
     font-size: 18px;

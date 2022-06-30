@@ -1,11 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { AutoComplete, Input, Dropdown, Checkbox, Menu } from "antd";
-import { DownOutlined } from "@ant-design/icons";
+import { AutoComplete, Input } from "antd";
+import axios from "src/Utils/axiosConfig";
 import { ElementTagInterface } from "src/Interfaces/SearchInterface";
 import SearchTags from "./SearchTags";
 import { ReactComponent as InputSearchIcon } from "../../Assets/img/searchInputIcon.svg";
+import { useAppSelector, useAppDispatch } from "src/Redux/hooks";
+import { setPostsList, setShowSearchFeed } from "src/Redux/postModal";
+import { useNavigate } from "react-router-dom";
 
 const Search = () => {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  //STATE DEFINITIONS
+  const { isLoggedIn, token } = useAppSelector((state) => state.authModal);
+  const { postsList } = useAppSelector((state) => state.postModal);
   const [openAutoComplete, setOpenAutoComplete] = useState({
     clicked_type: "",
     open: false,
@@ -13,18 +22,53 @@ const Search = () => {
   const [inputValue, setInputValue] = useState("");
   const [tags, setTags] = useState([]);
 
-  const renderTitle = (title: string) => {
-    return <span className="auto-complete-rendered-Title">{title}</span>;
-  };
+  //API CALLS
+  const searchPosts = async (searchQuery) => {
+    const response = await axios.post(
+      "/api/search",
+      JSON.stringify({ searchQuery: searchQuery }),
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      }
+    );
 
-  const renderItem = (prefix: string) => ({
-    value: prefix,
-    label: (
-      <div key={inputValue} className="auto-complete-rendered-Label">
-        {inputValue}
-      </div>
-    ),
-  });
+    const data = response.data;
+    //CHECK FOR POSTS CURRENT USER HAS RATED/SAVED
+    let tempFeed = [];
+    if (isLoggedIn) {
+      const postSavedData = response.data.pop();
+      const postRatingData = response.data.pop();
+
+      for (let i = 0; i < data.length; i++) {
+        let tempPost = data[i];
+        tempPost["userRating"] = 0;
+        for (let j = 0; j < postRatingData?.postsLiked.length; j++) {
+          if (tempPost.id === postRatingData.postsLiked[j].postid) {
+            tempPost["userRating"] = Number(
+              postRatingData.postsLiked[j].rating
+            );
+            break;
+          }
+        }
+        tempPost["saved"] = false;
+        for (let j = 0; j < postSavedData.postsSaved.length; j++) {
+          if (tempPost.id === postSavedData.postsSaved[j].postid) {
+            tempPost["saved"] = true;
+            break;
+          }
+        }
+        tempFeed.push(tempPost);
+      }
+    } else {
+      tempFeed = data;
+    }
+
+    dispatch(setPostsList(tempFeed));
+  };
 
   const onFocus = () => {
     if (openAutoComplete.open) {
@@ -95,9 +139,15 @@ const Search = () => {
   const onKeydown = (event: any) => {
     if (event.keyCode === 13) {
       setOpenAutoComplete({ clicked_type: "onFocus", open: false });
-      console.log(inputValue);
       //api call
-      setInputValue("");
+      if (inputValue.trim() === "") {
+        navigate("/");
+        return;
+      }
+      searchPosts(inputValue);
+      dispatch(setShowSearchFeed(true));
+      navigate("/");
+      // setInputValue("");
     }
   };
 

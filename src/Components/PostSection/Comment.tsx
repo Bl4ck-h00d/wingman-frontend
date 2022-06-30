@@ -49,16 +49,7 @@ const CommentComponent = ({ comment, ratings, vote, postId }) => {
   const { editComment } = useAppSelector((state) => state.commentModal);
   const dispatch = useAppDispatch();
 
-  const handleEditComment = () => {
-    dispatch(setEditComment(true));
-    dispatch(
-      setCurrentComment({
-        editingCommentId: comment.id,
-        editingComment: comment.comment,
-        editingPostId: postId,
-      })
-    );
-  };
+  
   const { token, isLoggedIn, username } = useAppSelector(
     (state) => state.authModal
   );
@@ -68,12 +59,26 @@ const CommentComponent = ({ comment, ratings, vote, postId }) => {
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [edited, setEdited] = useState(comment.edited);
 
-  const loginCheck = () => {
+  const loginCheck = (message) => {
     if (!isLoggedIn) {
-      Notification("warning", "Warning", "Please Login before creating a post");
+      Notification("warning", "Warning", `Please Login ${message}`);
       return false;
     }
     return true;
+  };
+
+  const handleEditComment = () => {
+    if (!loginCheck("Invalid Operation")) {
+      return;
+    }
+    dispatch(setEditComment(true));
+    dispatch(
+      setCurrentComment({
+        editingCommentId: comment.id,
+        editingComment: comment.comment,
+        editingPostId: postId,
+      })
+    );
   };
 
   const updateRatings = async (newUserVote, id) => {
@@ -89,7 +94,7 @@ const CommentComponent = ({ comment, ratings, vote, postId }) => {
   };
 
   const handleUpvote = () => {
-    if (!loginCheck()) {
+    if (!loginCheck("to vote the comment")) {
       return;
     }
     let newUserVote = 0;
@@ -107,7 +112,7 @@ const CommentComponent = ({ comment, ratings, vote, postId }) => {
   };
 
   const handleDownvote = () => {
-    if (!loginCheck()) {
+    if (!loginCheck("to vote the comment")) {
       return;
     }
     let newUserVote = 0;
@@ -125,12 +130,16 @@ const CommentComponent = ({ comment, ratings, vote, postId }) => {
   };
 
   const handleDeleteComment = () => {
+    if (!loginCheck("Invalid Operation")) {
+      return;
+    }
     setDeleteModalVisible(true);
   };
 
   const hideModal = () => {
     setDeleteModalVisible(false);
   };
+
   const renderAction = [
     <div style={{ display: "flex" }}>
       <div className="comment-ratings">
@@ -171,7 +180,9 @@ const CommentComponent = ({ comment, ratings, vote, postId }) => {
           </>
         )}
       </div>
-      {comment["author"] === username ? (
+      {comment["author"] !== null &&
+      comment["author"] === username &&
+      !comment["anonymous"] ? (
         <Tooltip placement="top" title="Edit comment">
           <EditOutlined
             onClick={handleEditComment}
@@ -181,7 +192,9 @@ const CommentComponent = ({ comment, ratings, vote, postId }) => {
       ) : (
         <></>
       )}
-      {comment["author"] === username ? (
+      {comment["author"] !== null &&
+      comment["author"] === username &&
+      !comment["anonymous"] ? (
         <Tooltip placement="top" title="Delete comment">
           <DeleteOutlined
             onClick={handleDeleteComment}
@@ -224,6 +237,7 @@ const CommentComponent = ({ comment, ratings, vote, postId }) => {
             )}
           {timeDifference.days !== null &&
             timeDifference.days <= 0 &&
+            timeDifference.hours <= 0 &&
             timeDifference.minutes <= 0 && <>a few seconds ago</>}
           {edited && <div>(edited)</div>}
         </div>

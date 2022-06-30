@@ -13,6 +13,7 @@ import axios from "src/Utils/axiosConfig";
 import { useAppSelector } from "src/Redux/hooks";
 import Notification from "../Utils/Notification";
 import { useNavigate } from "react-router-dom";
+import moment from "moment";
 
 const { Paragraph } = Typography;
 
@@ -27,6 +28,8 @@ interface FeedCardInterface {
   comments?: number | null;
   tags?: string[] | null;
   saved?: boolean;
+  timestamp?: string;
+  edited?: boolean;
 }
 
 const FeedCard = ({
@@ -40,6 +43,8 @@ const FeedCard = ({
   comments,
   tags,
   saved,
+  timestamp,
+  edited
 }: FeedCardInterface) => {
 
   //STATE DEFINITIONS
@@ -47,8 +52,33 @@ const FeedCard = ({
   const [userVote, setUserVote] = useState(Number(userRating)); //1,-1,0
   const [isSavedPost, setIsSavedPost] = useState(saved);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [timeDifference, setTimeDifference] = useState({
+    days: null,
+    hours: null,
+    minutes: null,
+  });
   const { isLoggedIn, token } = useAppSelector((state) => state.authModal);
   const navigate = useNavigate();
+
+
+useEffect(() => {
+  
+  if (timestamp !== "") {
+    const postTime = moment(moment.utc(timestamp).format("DD-MMM-YYYY HH:mm"));
+    const currentTime = moment(moment.utc().format("DD-MMM-YYYY HH:mm"));
+    const duration = moment.duration(currentTime.diff(postTime));
+
+    var days = duration.asDays();
+    var hours = duration.hours();
+    var minutes = duration.minutes();
+
+    setTimeDifference({
+      days: Math.floor(days),
+      hours: hours,
+      minutes: minutes,
+    });
+  }
+}, [ timestamp]);
 
   //API CALLS
   const updateRatings = async (newUserVote) => {
@@ -76,9 +106,9 @@ const FeedCard = ({
    };
 
   //UTILITY FUNCTIONS
-  const loginCheck = () => {
+  const loginCheck = (message) => {
     if (!isLoggedIn) {
-      Notification("warning", "Warning", "Please Login before creating a post");
+      Notification("warning", "Warning", `Please Login ${message}`);
       return false;
     }
     return true;
@@ -97,7 +127,7 @@ const FeedCard = ({
   };
 
   const handleUpvote = () => {
-    if (!loginCheck()) {
+    if (!loginCheck("to vote the post")) {
       return;
     }
     let newUserVote = 0;
@@ -115,7 +145,7 @@ const FeedCard = ({
   };
 
   const handleDownvote = () => {
-    if (!loginCheck()) {
+    if (!loginCheck("to the the post")) {
       return;
     }
     setRatingsCount((prevState) => prevState - userVote);
@@ -134,7 +164,7 @@ const FeedCard = ({
 
  
   const handleSavePost = () => {
-    if (!loginCheck()) {
+    if (!loginCheck("to save the post")) {
       return;
     }
     try {
@@ -211,6 +241,37 @@ const FeedCard = ({
                 </>
               )}
               {author !== null ? <>Posted by {author}</> : <>Anonymous</>}
+              <div className="separator-dot"></div>
+              <div className="post-timestamp">
+                {timeDifference.days !== null && timeDifference.days > 0 && (
+                  <>
+                    {timeDifference.days} day
+                    {timeDifference.days > 1 ? "s" : ""} ago
+                  </>
+                )}
+                {timeDifference.days !== null &&
+                  timeDifference.days <= 0 &&
+                  timeDifference.hours > 0 && (
+                    <>
+                      {timeDifference.hours} hour
+                      {timeDifference.hours > 1 ? "s" : ""} ago
+                    </>
+                  )}
+                {timeDifference.days !== null &&
+                  timeDifference.days <= 0 &&
+                  timeDifference.hours <= 0 &&
+                  timeDifference.minutes > 0 && (
+                    <>
+                      {timeDifference.minutes} minute
+                      {timeDifference.minutes > 1 ? "s" : ""} ago
+                    </>
+                  )}
+                {timeDifference.days !== null &&
+                  timeDifference.days <= 0 &&
+                  timeDifference.hours <= 0 &&
+                  timeDifference.minutes <= 0 && <>a few seconds ago</>}
+              </div>
+              {edited && <div> (edited)</div>}
             </div>
             <div className="feed-title" onClick={getPost}>
               {title}

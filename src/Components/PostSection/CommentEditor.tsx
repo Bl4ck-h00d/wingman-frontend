@@ -77,15 +77,15 @@ const CommentEditor = ({ postId, addComment }) => {
     }
   };
 
-  const loginCheck = () => {
+  const loginCheck = (message) => {
     if (!isLoggedIn) {
-      Notification("warning", "Warning", "Please Login before creating a post");
+      Notification("warning", "Warning", `Please Login ${message}`);
       return false;
     }
     return true;
   };
   const handleSubmit = () => {
-    if (!loginCheck()) {
+    if (!loginCheck("to comment on posts")) {
       return;
     }
     if (!newComment || newComment.trim() === "") {

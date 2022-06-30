@@ -1,0 +1,36 @@
+.filter-container{
+    height: 60px;
+    background-color: white;
+    position: absolute;
+    top: 18%;
+    left: 15%;
+    width: 50rem;
+    border-radius: 4px;
+    padding: 20px;
+    display: flex;
+    .filter-header{
+        font-family: $base-font;
+        font-size: 18px;
+        font-weight: 500;
+        display: flex;
+        height: 100%;
+        align-items: center;
+        margin-right: 40px;
+    }
+    .filter-options{
+        display: flex;
+        font-family: $base-font;
+        font-size: 18px;
+        font-weight: 500;
+        gap: 30px;
+        align-items: center;
+        height: 100%;
+    }
+    .filter-option{
+        padding: 0 20px;
+    }
+    .filter-option:hover{
+        cursor: pointer;
+        background-color: #dedede;
+    }
+}

@@ -5,4 +5,12 @@
     position: absolute;
     top: 30%;
     left: 15%;
+
+    .no-post{
+        font-family: $base-font;
+        font-size: 25px;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
 }
