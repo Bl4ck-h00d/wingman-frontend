@@ -1,11 +1,16 @@
 import { BrowserRouter as Router } from "react-router-dom";
 import "./App.scss";
-import AnimatedRoutes from "./components/AnimatedRoutes";
-import Header from "./components/Header";
-import { setToken, setCurrentUser, setLogout, setIsLoggedIn } from "./redux/auth";
+import AnimatedRoutes from "./Components/AnimatedRoutes";
+import Header from "./Components/Header";
+import {
+  setToken,
+  setCurrentUser,
+  setLogout,
+  setIsLoggedIn,
+} from "./Redux/auth";
 import jwt_decode from "jwt-decode";
-import store from "src/redux/rootReducer";
-import localStorageService from "src/utils/localStorage";
+import store from "src/Redux/rootReducer";
+import localStorageService from "src/Utils/localStorage";
 
 // Check for token to keep user logged in
 const token = localStorageService.get("token");
