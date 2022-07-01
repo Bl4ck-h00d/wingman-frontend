@@ -27,13 +27,14 @@ const FeedContainer = () => {
     });
 
     const data = response.data;
-
     //CHECK FOR POSTS CURRENT USER HAS RATED/SAVED
     let tempFeed = [];
 
     if (isLoggedIn) {
+      const anonymousPosts = response.data.pop();
       const postSavedData = response.data.pop();
       const postRatingData = response.data.pop();
+      console.log(anonymousPosts);
 
       for (let i = 0; i < data.length; i++) {
         let tempPost = data[i];
@@ -53,12 +54,21 @@ const FeedContainer = () => {
             break;
           }
         }
+
+        tempPost["anonymousPostByCurrentUser"] = false;
+        for (let k = 0; k < anonymousPosts.anonymousPostsByUser.length; k++) {
+          if (tempPost.id === anonymousPosts.anonymousPostsByUser[k].postid) {
+            tempPost["anonymousPostByCurrentUser"] = true;
+            break;
+          }
+        }
         tempFeed.push(tempPost);
       }
     } else {
       tempFeed = data;
     }
     setLoading(false);
+    tempFeed.sort((a, b) => (Number(a.id) < Number(b.id) ? 1 : -1));
     dispatch(setPostsList(tempFeed));
   };
 

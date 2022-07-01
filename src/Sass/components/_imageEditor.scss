@@ -1,11 +1,11 @@
 .canvas-container {
-  border: 2px dashed !important;
+  // border: 2px dashed !important;
   display: flex;
   height: 100%;
   width: 100%;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  // overflow: hidden;
 
     .edit-image {
       height: auto;
@@ -15,9 +15,13 @@
 
 .edit-btn-container {
   display: flex;
-  justify-content: end;
+  justify-content: space-between;
   margin-top: 10px;
   gap: 10px;
+  bottom: 2rem;
+  position: absolute;
+  left: 4%;
+  width: 92%;
 
   .edit-close-btn {
     display: fixed;
@@ -57,11 +61,11 @@
 }
 
 .tooltip-container {
+  position: absolute;
   margin-top: 10px;
   margin-bottom: 20px;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  width: 100%;
+  bottom: 4rem;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -83,6 +87,9 @@
 
 .drawing-tool-container {
   display: flex;
+  position: absoulte;
+  bottom: 2rem;
+  width: 100%;
   flex-direction: column;
   align-items: center;
   gap: 1.5rem;
@@ -190,6 +197,25 @@
         list-style-type: none;
       }
 
+    }
+  }
+}
+
+
+@media only screen and (max-width: 900px) {
+
+.canvas-container {
+
+    display: flex;
+    height: 100%;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+
+    .edit-image {
+      height: auto;
+      max-width: 100%;
     }
   }
 }

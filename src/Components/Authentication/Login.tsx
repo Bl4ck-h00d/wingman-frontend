@@ -88,6 +88,7 @@ const Login: React.FC = () => {
 
         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
           <Button
+            className="login-btn-modal"
             type="primary"
             htmlType="submit"
             loading={loading}

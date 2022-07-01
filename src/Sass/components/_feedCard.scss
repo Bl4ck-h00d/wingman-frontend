@@ -49,13 +49,13 @@
     align-items: center;
     margin-bottom: 8px;
   }
-    .separator-dot {
-      margin-left: 2px;
-      background-color: #959899;
-      border-radius: 50%;
-      width: 3px;
-      height: 3px;
-    }
+  .separator-dot {
+    margin-left: 2px;
+    background-color: #959899;
+    border-radius: 50%;
+    width: 3px;
+    height: 3px;
+  }
   .feed-title {
     font-family: $base-font;
     font-size: 18px;
@@ -119,9 +119,9 @@
       align-items: center;
       padding: 2px;
     }
-    .share{
+    .share {
       display: flex;
-        align-items: center;
+      align-items: center;
       padding: 2px;
     }
 
@@ -142,4 +142,96 @@
   justify-content: center;
   border: 1px;
   background-color: #e2e2e2;
+}
+
+@media only screen and (max-width: 900px) {
+  .feed-card-container {
+    .feed-header {
+      display: flex;
+      gap: 10px;
+
+      .feed-ratings {
+        font-size: 14px;
+      }
+
+      .downvoteIcon,
+      .upvoteIcon {
+        width: 20px !important;
+        height: 20px !important;
+      }
+    }
+
+    .feed-author-avtaar {
+      height: 19px;
+      width: 19px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .feed-author {
+      margin-bottom: 8px;
+    }
+
+    .feed-title {
+      // font-size: 15px;
+      // min-height: 30px;
+      font-size: 15px;
+        font-weight: 500;
+        line-height: 22px;
+    }
+
+    .feed-tags {
+      flex-wrap: wrap;
+      font-size: 11px;
+      gap: 5px;
+      height: auto;
+        max-height: 30px;
+    }
+        .media {
+          height: 120px;
+        }
+    
+        .feed-description {
+          max-height: 210px;
+          font-size: 14px;
+          font-weight: 400;
+            line-height: 21px;
+            word-break: break-word;
+          padding: 5px 8px 10px 10px;
+        }
+    
+        .feed-footer {
+          padding: 0;
+          display: flex;
+          align-items: center;
+          justify-content: space-around;
+          gap: 0px;
+    
+          .comments {
+            display: flex;
+            align-items: center;
+            padding: 2px;
+          }
+    
+          .save {
+            display: flex;
+            align-items: center;
+            padding: 2px;
+          }
+    
+          .share {
+            display: flex;
+            align-items: center;
+            padding: 2px;
+          }
+    
+          .comments:hover,
+          .save:hover,
+          .share:hover {
+            background-color: rgb(210, 205, 205);
+          }
+        }
+        
+  }
 }

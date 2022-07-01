@@ -5,8 +5,6 @@
 
 .login-form {
   .ant-btn {
-    position: absolute;
-    bottom: 50px;
     width: 80%;
   }
 }
@@ -35,6 +33,20 @@
   }
 }
 .signup-options {
+  margin-top: -10px;
   display: flex;
   justify-content: space-between;
+}
+
+.ant-modal-content{
+  height: 400px;
+}
+
+.signup-btn-modal{
+  margin-bottom: 50px;
+  width: 80%;
+}
+
+.login-btn-modal{
+  margin-bottom: 50px;
 }

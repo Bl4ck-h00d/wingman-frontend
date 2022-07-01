@@ -37,7 +37,7 @@ const TagField = ({ setTagsProp, initialTags }) => {
   };
 
   const handleInputConfirm = () => {
-    if (inputValue && tags.indexOf(inputValue) === -1) {
+    if (tags.length<6 && inputValue && tags.indexOf(inputValue) === -1) {
       setTags([...tags, inputValue]);
     }
     setInputVisible(false);

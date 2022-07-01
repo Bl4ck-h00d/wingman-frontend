@@ -3,7 +3,7 @@
     // border-radius: 8px;
     width: 50rem;
     position: absolute;
-    top: 30%;
+    top: 200px;
     left: 15%;
 
     .no-post{
@@ -13,4 +13,16 @@
         display: flex;
         justify-content: center;
     }
+}
+
+
+@media only screen and (max-width: 900px) {
+    .feed-container {
+            width: 98%;
+                position: absolute;
+                top: 200px;
+                left: 1%;
+    }
+
+
 }

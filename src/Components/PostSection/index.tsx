@@ -66,9 +66,12 @@ const PostSection = () => {
     tags: null,
     anonymous: null,
     edited: false,
+    anonymousPostByCurrentUser: false,
   });
 
   const [isSavedPost, setIsSavedPost] = useState(false);
+  const [anonymousPostByCurrentUser, setAnonymousPostByCurrentUser] =
+    useState(false);
 
   const scrollRef = useRef(null);
   const dispatch = useAppDispatch();
@@ -82,13 +85,14 @@ const PostSection = () => {
     });
 
     const data = response.data;
-
+  
     setPost({ ...data[0]["post"][0] });
     if (isLoggedIn) {
       setUserVote(Number(data[1]["userRating"]));
       setIsSavedPost(data[2]["postSaved"]);
-      setCommentsLiked(data[3]["comments"].pop()["commentsLiked"]);
-      setCommentsData(data[3]["comments"]);
+      setCommentsLiked(data[4]["comments"].pop()["commentsLiked"]);
+      setCommentsData(data[4]["comments"]);
+      setAnonymousPostByCurrentUser(data[3]["anonymousPostsByUser"]);
       setTimestamp(data[0]["post"][0]["timestamp"]);
     } else {
       setCommentsData(data[1]["comments"]);
@@ -329,12 +333,12 @@ const PostSection = () => {
                   </>
                 )}
               </div>
-              <div>
+              <div style={{width:"100%"}}>
                 <div className="post-author">
                   <div
                     style={{
                       display: "flex",
-                      gap: "5px",
+                      gap: "3px",
                       alignItems: "center",
                     }}
                   >
@@ -393,24 +397,30 @@ const PostSection = () => {
                     </div>
                     {post.edited && <div> (edited)</div>}
                   </div>
-                  {post.author === username && (
-                    <div className="header-menu">
-                      <Dropdown overlay={menu} placement="bottom">
-                        <EllipsisOutlined
-                          style={{ fontSize: "20px", cursor: "pointer" }}
-                        />
-                      </Dropdown>
-                    </div>
-                  )}
+                  {isLoggedIn &&
+                    ((username!=null && post.author === username) ||
+                      anonymousPostByCurrentUser) && (
+                      <div className="header-menu">
+                        <Dropdown overlay={menu} placement="bottom">
+                          <EllipsisOutlined
+                            style={{ fontSize: "20px", cursor: "pointer" }}
+                          />
+                        </Dropdown>
+                      </div>
+                    )}
                 </div>
                 <div className="post-title">{post.title}</div>
-                <div className="post-tags">
-                  {post.tags &&
-                    post.tags.length > 0 &&
-                    post.tags
-                      .filter((tag, _) => tag.trim() !== "")
-                      .map((tag, index) => <span key={"" + index}>{tag}</span>)}
-                </div>
+                {post.tags && post.tags.length > 0 && post.tags[0] !== "" && (
+                  <div className="post-tags">
+                    {post.tags &&
+                      post.tags.length > 0 &&
+                      post.tags
+                        .filter((tag, _) => tag.trim() !== "")
+                        .map((tag, index) => (
+                          <span key={"" + index}>{tag}</span>
+                        ))}
+                  </div>
+                )}
               </div>
             </div>
 

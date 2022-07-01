@@ -176,14 +176,14 @@ const CommentEditor = ({ postId, addComment }) => {
           loading={submitting}
           onClick={handleSubmit}
           type="primary"
-          className="comment-btn"
+          className={editComment?"edit-comment-btn":"comment-btn"}
         >
           {editComment ? "Edit Comment" : "Add Comment"}
         </Button>
         {editComment && (
           <Button
             onClick={() => dispatch(setEditComment(false))}
-            className="edit-btn"
+            className="edit-cancel-btn"
             danger
           >
             Cancel

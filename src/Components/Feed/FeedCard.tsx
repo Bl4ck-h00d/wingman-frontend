@@ -276,12 +276,14 @@ useEffect(() => {
             <div className="feed-title" onClick={getPost}>
               {title}
             </div>
-            <div className="feed-tags" onClick={getPost}>
-              {tags.length > 0 &&
-                tags
-                  .filter((tag, _) => tag.trim() !== "")
-                  .map((tag, index) => <span key={"" + index}>{tag}</span>)}
-            </div>
+            {tags.length > 0 && (
+              <div className="feed-tags" onClick={getPost}>
+                {tags.length > 0 &&
+                  tags
+                    .filter((tag, _) => tag.trim() !== "")
+                    .map((tag, index) => <span key={"" + index}>{tag}</span>)}
+              </div>
+            )}
           </div>
         </div>
         <div onClick={getPost}>

@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Button, Switch, Form, Input, Divider, Spin, notification } from "antd";
+import { Button, Switch, Form, Input, Divider, Spin, Popover } from "antd";
 import {
   LoadingOutlined,
   WarningTwoTone,
   EditOutlined,
   DeleteOutlined,
+  InfoCircleOutlined,
 } from "@ant-design/icons";
 import TagField from "./TagFormField";
 import UploadImage from "./UploadImage";
@@ -95,8 +96,6 @@ const CreatePost = () => {
     }
   }, [editingPost]);
 
-  
-
   //UTILITY FUNCTIONS
   const saveEditImage = (file, index) => {
     const newImageList = images;
@@ -185,7 +184,6 @@ const CreatePost = () => {
     return;
   };
 
-  
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -265,7 +263,25 @@ const CreatePost = () => {
           />
         </Form.Item>
 
-        <Form.Item label="Post Anonymously" valuePropName="anonymous">
+        <Form.Item
+          label={
+            <>
+              Post Anonymously{" "}
+              <Popover
+                placement="top"
+                title={null}
+                content={"Your username will not be visible to others. Also you can't edit or delete the post."}
+                trigger="click"
+              >
+                <InfoCircleOutlined
+                  className="info-icon"
+                  style={{ marginLeft: "5px" }}
+                />
+              </Popover>
+            </>
+          }
+          valuePropName="anonymous"
+        >
           <Switch
             style={{ marginLeft: "10px" }}
             checked={postAnonymously}

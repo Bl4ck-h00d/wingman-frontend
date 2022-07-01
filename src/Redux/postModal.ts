@@ -16,6 +16,7 @@ interface postsListInterface{
   saved: boolean;
   timestamp?: string;
   edited?: boolean;
+  anonymousPostByCurrentUser?: boolean;
 }
 interface initialStateInterface {
   currentPost: {
@@ -24,6 +25,7 @@ interface initialStateInterface {
     description: string;
     tags: string[];
     anonymous: boolean;
+    anonymousPostByCurrentUser: boolean;
   };
   editingPost: boolean;
   postUpdatedRedirect: boolean;
