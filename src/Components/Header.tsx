@@ -4,7 +4,7 @@ import { Button } from "antd";
 import Logo from "../Assets/img/logo.png";
 import AuthModal from "./Authentication/AuthModal";
 import { useAppSelector } from "src/Redux/hooks";
-import {ReactComponent as LogoIcon} from "src/Assets/img/angel.svg"
+import { ReactComponent as LogoIcon } from "src/Assets/img/angel.svg";
 
 const Header = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -12,12 +12,12 @@ const Header = () => {
   return (
     <>
       <div className="header-container">
-        <span className="header-logo">
-          <a href="http://localhost:3000/">
+        <a href="http://localhost:3000/">
+          <span className="header-logo">
             <LogoIcon />
-          </a>
-          <span>WingMan</span>
-        </span>
+            <span>WingMan</span>
+          </span>
+        </a>
         <Search />
         {!isLoggedIn ? (
           <Button

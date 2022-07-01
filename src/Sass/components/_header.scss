@@ -1,3 +1,4 @@
+
 #root {
   background-color: #dae0e6;
   height: 100%;
@@ -24,11 +25,17 @@
 }
 
 .header-logo {
-  font-family: $base-font;
+  color: #4d84c8;
+    font-family: "Luckiest Guy", cursive;
+    font-size: 30px;
+    letter-spacing: 10px;
   display: flex;
   align-items: center;
-  font-size: 25px;
+  // font-size: 25px;
+  font-weight: 700;
   gap: 5px;
+  text-align: center;
+
 }
 
 .signup-btn {
@@ -82,6 +89,7 @@
     flex-direction: column;
     font-size: 13px;
     gap: 0px;
+    letter-spacing: 3px;
 
     svg {
       width: 30px;
@@ -90,6 +98,6 @@
   }
 
   .search-auto-complete {
-    width: 60%;
+    width: 55%;
   }
 }

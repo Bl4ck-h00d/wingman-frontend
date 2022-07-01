@@ -276,7 +276,7 @@ useEffect(() => {
             <div className="feed-title" onClick={getPost}>
               {title}
             </div>
-            {tags.length > 0 && (
+            {tags.length > 0 &&tags[0]!="" && (
               <div className="feed-tags" onClick={getPost}>
                 {tags.length > 0 &&
                   tags

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import Login from "./Login";
 import Signup from "./Signup";
 
-const AuthModal = ({ visible , setVisible}) => {
+const AuthModal = ({ visible, setVisible }) => {
   useEffect(() => {
     setIsModalVisible(visible);
     setVisible(visible);
@@ -33,6 +33,8 @@ const AuthModal = ({ visible , setVisible}) => {
       onOk={handleOk}
       onCancel={handleCancel}
       footer={null}
+      mask={true}
+      className="auth-modal"
     >
       <Tabs defaultActiveKey="1" >
         <TabPane tab="Login" key="1">

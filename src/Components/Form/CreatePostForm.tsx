@@ -270,7 +270,7 @@ const CreatePost = () => {
               <Popover
                 placement="top"
                 title={null}
-                content={"Your username will not be visible to others. Also you can't edit or delete the post."}
+                content={"Your username will not be visible to others."}
                 trigger="click"
               >
                 <InfoCircleOutlined
