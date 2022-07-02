@@ -39,9 +39,9 @@
   justify-content: space-between;
 }
 
-.ant-modal-content{
-  height: 400px;
-}
+// .ant-modal-content{
+//   height: 400px;
+// }
 
 .signup-btn-modal{
   margin-bottom: 50px;
@@ -55,12 +55,12 @@
 
 @media only screen and (max-width: 900px) {
 
-.auth-modal {
-    .ant-modal-content {
-      height: 530px !important;
+// .auth-modal {
+//     .ant-modal-content {
+//       height: 530px !important;
 
-    }
-  }
+//     }
+//   }
 .signup-options {
   margin-top: -10px;
   margin-left: -10px;

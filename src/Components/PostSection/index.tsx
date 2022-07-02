@@ -78,26 +78,33 @@ const PostSection = () => {
 
   //API CALLS
   const getPostById = async () => {
-    const response = await axios.get(`/api/post/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    try {
+      const response = await axios.get(`/api/post/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    const data = response.data;
-  
-    setPost({ ...data[0]["post"][0] });
-    if (isLoggedIn) {
-      setUserVote(Number(data[1]["userRating"]));
-      setIsSavedPost(data[2]["postSaved"]);
-      setCommentsLiked(data[4]["comments"].pop()["commentsLiked"]);
-      setCommentsData(data[4]["comments"]);
-      setAnonymousPostByCurrentUser(data[3]["anonymousPostsByUser"]);
-      setTimestamp(data[0]["post"][0]["timestamp"]);
-    } else {
-      setCommentsData(data[1]["comments"]);
-      setTimestamp(data[0]["post"][0]["timestamp"]);
+      const data = response.data;
+
+      setPost({ ...data[0]["post"][0] });
+      if (isLoggedIn) {
+        setUserVote(Number(data[1]["userRating"]));
+        setIsSavedPost(data[2]["postSaved"]);
+        setCommentsLiked(data[4]["comments"].pop()["commentsLiked"]);
+        setCommentsData(data[4]["comments"]);
+        setAnonymousPostByCurrentUser(data[3]["anonymousPostsByUser"]);
+        setTimestamp(data[0]["post"][0]["timestamp"]);
+      } else {
+        setCommentsData(data[1]["comments"]);
+        setTimestamp(data[0]["post"][0]["timestamp"]);
+      }
+    } catch (error) {
+      navigate("/error");
+      setLoading(false);
+      return;
     }
+    setLoading(false);
   };
 
   const updateRatings = async (newUserVote) => {
@@ -153,17 +160,14 @@ const PostSection = () => {
       setLoading(true);
       getPostById();
       setTimeout(() => {
-        dispatch(setCommentUpdateReload(false));
         setLoading(false);
+        dispatch(setCommentUpdateReload(false));
       }, 1000);
     }
   }, [commentUpdateReload]);
 
   useEffect(() => {
     getPostById();
-    setTimeout(() => {
-      setLoading(false);
-    }, 1500);
   }, []);
 
   useEffect(() => {
@@ -333,7 +337,7 @@ const PostSection = () => {
                   </>
                 )}
               </div>
-              <div style={{width:"100%"}}>
+              <div style={{ width: "100%" }}>
                 <div className="post-author">
                   <div
                     style={{
@@ -398,7 +402,7 @@ const PostSection = () => {
                     {post.edited && <div> (edited)</div>}
                   </div>
                   {isLoggedIn &&
-                    ((username!=null && post.author === username) ||
+                    ((username != null && post.author === username) ||
                       anonymousPostByCurrentUser) && (
                       <div className="header-menu">
                         <Dropdown overlay={menu} placement="bottom">

@@ -7,6 +7,7 @@ const AuthModal = ({ visible, setVisible }) => {
   useEffect(() => {
     setIsModalVisible(visible);
     setVisible(visible);
+   
   }, [visible]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -26,7 +27,6 @@ const AuthModal = ({ visible, setVisible }) => {
   };
   const { TabPane } = Tabs;
 
- 
   return (
     <Modal
       visible={isModalVisible}
@@ -36,7 +36,7 @@ const AuthModal = ({ visible, setVisible }) => {
       mask={true}
       className="auth-modal"
     >
-      <Tabs defaultActiveKey="1" >
+      <Tabs defaultActiveKey="1">
         <TabPane tab="Login" key="1">
           <Login />
         </TabPane>

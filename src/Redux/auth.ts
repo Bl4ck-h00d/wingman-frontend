@@ -3,8 +3,8 @@ import { AppStateType } from "./rootReducer";
 import localStorageService from "src/Utils/localStorage";
 
 interface initialStateInterface {
-  username?: null;
-  email?: null;
+  username?: string;
+  email?: string;
   isLoggedIn: boolean;
   loading: boolean;
   token: string;

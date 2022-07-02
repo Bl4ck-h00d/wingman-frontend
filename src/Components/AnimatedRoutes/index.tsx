@@ -3,7 +3,9 @@ import { Routes, Route, useLocation } from "react-router-dom";
 import Home from "../Home";
 import CreatePost from "../Form/CreatePostForm";
 import PostSection from "../PostSection";
+import ErrorPage from "../ErrorPage";
 import { AnimatePresence } from "framer-motion";
+import VerifiedPage from "../VerifiedPage";
 
 
 const AnimatedRoutes = () => {
@@ -15,6 +17,8 @@ const AnimatedRoutes = () => {
         <Route path="/" element={<Home />} />{" "}
         <Route path="/post" element={<CreatePost />} />
         <Route path="/post/:id" element={<PostSection />} />
+        <Route path="/verfied" element={<VerifiedPage/>} />
+        <Route path="*" element={<ErrorPage />} />
       </Routes>
     </AnimatePresence>
   );

@@ -13,9 +13,11 @@ const FeedContainer = () => {
   //STATE DEFINITIONS
   const [loading, setLoading] = useState(true);
   const { isLoggedIn, token } = useAppSelector((state) => state.authModal);
+  const [loggedIn, setLoggedIn] = useState(isLoggedIn);
   const { postsList, showSearchFeed } = useAppSelector(
     (state) => state.postModal
   );
+
 
   //API CALLS
   const getFeed = async () => {
@@ -34,7 +36,6 @@ const FeedContainer = () => {
       const anonymousPosts = response.data.pop();
       const postSavedData = response.data.pop();
       const postRatingData = response.data.pop();
-      console.log(anonymousPosts);
 
       for (let i = 0; i < data.length; i++) {
         let tempPost = data[i];
@@ -77,7 +78,7 @@ const FeedContainer = () => {
     if (!showSearchFeed) {
       getFeed();
     }
-  }, [isLoggedIn, showSearchFeed]);
+  }, [loggedIn, showSearchFeed]);
 
   return (
     <>

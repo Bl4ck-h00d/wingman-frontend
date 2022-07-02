@@ -1,5 +1,5 @@
 import { Button, Checkbox, Form, Input } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Notification from "../Utils/Notification";
 import axios from "src/Utils/axiosConfig";
 import { useAppSelector, useAppDispatch } from "src/Redux/hooks";
@@ -99,18 +99,16 @@ const Login: React.FC = () => {
         </Form.Item>
       </Form>
 
-      <div className="social-divider">
+      {/* <div className="social-divider">
         <span className="or">or</span>
-      </div>
-      <div className="signup-options">
-        <Button type="primary">
+      </div> */}
+      {/* <div className="signup-options"> */}
+      {/* <Button type="primary">
           <span className="button-text">Continue with Google</span>
           <span className="button-icon"></span>
-        </Button>
-        <Button type="primary">
-          <span className="button-text">Continue with Facebook</span>
-        </Button>
-      </div>
+        </Button>/ */}
+      {/* <div id="google-auth-btn"></div> */}
+      {/* </div> */}
     </section>
   );
 };

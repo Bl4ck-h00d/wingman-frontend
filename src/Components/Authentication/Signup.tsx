@@ -19,6 +19,8 @@ const Signup: React.FC = () => {
         headers: { "Content-Type": "application/json" },
         withCredentials: true,
       });
+      Notification("success", "Successfull", "Please check your Inbox for verification mail.");
+
       return result;
     } catch (error) {
       console.log(error); //donot remove (debugging purpose)
@@ -40,7 +42,7 @@ const Signup: React.FC = () => {
     }
 
     await postData(values);
-    
+
     //TODO-Redirect to email verification
   };
 
@@ -98,18 +100,12 @@ const Signup: React.FC = () => {
         </Form.Item>
       </Form>
 
-      <div className="social-divider">
+      {/* <div className="social-divider">
         <span className="or">or</span>
       </div>
       <div className="signup-options">
-        <Button type="primary">
-          <span className="button-text">Continue with Google</span>
-          <span className="button-icon"></span>
-        </Button>
-        <Button type="primary">
-          <span className="button-text">Continue with Facebook</span>
-        </Button>
-      </div>
+        <div id="google-auth-btn"></div>
+      </div> */}
     </section>
   );
 };
