@@ -28,6 +28,7 @@ const auth_modal = createSlice({
     setToken: (state, action) => {
       state.token = action.payload;
       localStorageService.set("token", state.token);
+      state.isLoggedIn = true;
     },
     setIsLoggedIn: (state, action) => {
       state.isLoggedIn = action.payload;
@@ -38,10 +39,11 @@ const auth_modal = createSlice({
     },
 
     setLogout: (state) => {
+      localStorageService.removeAll();
+      state.token = undefined;
       state.username = null;
       state.email = null;
       state.isLoggedIn = false;
-      localStorageService.removeAll();
     },
 
     setLoading: (state, action) => {

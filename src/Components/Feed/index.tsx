@@ -13,11 +13,9 @@ const FeedContainer = () => {
   //STATE DEFINITIONS
   const [loading, setLoading] = useState(true);
   const { isLoggedIn, token } = useAppSelector((state) => state.authModal);
-  const [loggedIn, setLoggedIn] = useState(isLoggedIn);
   const { postsList, showSearchFeed } = useAppSelector(
     (state) => state.postModal
   );
-
 
   //API CALLS
   const getFeed = async () => {
@@ -77,8 +75,21 @@ const FeedContainer = () => {
     setLoading(true);
     if (!showSearchFeed) {
       getFeed();
+    } else {
+      setTimeout(() => {
+        setLoading(false);
+      }, 1500);
     }
-  }, [loggedIn, showSearchFeed]);
+  }, [showSearchFeed, token]);
+
+  useEffect(() => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 500);
+  }, [postsList]);
+
+  // console.log(postsList)
 
   return (
     <>

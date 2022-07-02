@@ -4,7 +4,7 @@ import { Button, Menu, Dropdown } from "antd";
 import Logo from "../Assets/img/logo.png";
 import AuthModal from "./Authentication/AuthModal";
 import { useAppSelector, useAppDispatch } from "src/Redux/hooks";
-import { setLogout } from "src/Redux/auth";
+import { setLogout, setIsLoggedIn } from "src/Redux/auth";
 import { ReactComponent as LogoIcon } from "src/Assets/img/angel.svg";
 import { Link } from "react-router-dom";
 
@@ -14,8 +14,9 @@ const Header = () => {
   const dispatch = useAppDispatch();
 
   const handleLogOut = () => {
+    dispatch(setIsLoggedIn(false));
     dispatch(setLogout());
-  }
+  };
   const menu = (
     <Menu
       items={[

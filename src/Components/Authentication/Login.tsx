@@ -31,11 +31,12 @@ const Login: React.FC = () => {
 
     try {
       const result = await postData(values);
-      dispatch(setToken(result.token));
-      dispatch(setIsLoggedIn(true));
       dispatch(
         setCurrentUser({ username: result.username, email: result.email })
       );
+      dispatch(setToken(result.token));
+   
+
       Notification("success", "Sucessfull", "Logged in successfully");
     } catch (error) {
       console.log(error); //donot remove (debugging purpose)

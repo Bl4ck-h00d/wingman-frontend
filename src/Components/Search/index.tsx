@@ -80,6 +80,8 @@ const Search = () => {
     }
   };
 
+ 
+
   const onSelect = (value: any, option: any) => {
     if (value === "All Properties") {
       return;

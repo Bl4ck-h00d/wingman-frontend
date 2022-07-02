@@ -168,7 +168,7 @@ const PostSection = () => {
 
   useEffect(() => {
     getPostById();
-  }, []);
+  }, [isLoggedIn]);
 
   useEffect(() => {
     setRatingsCount(Number(post.ratings));

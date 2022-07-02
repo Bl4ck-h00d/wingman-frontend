@@ -227,7 +227,7 @@ useEffect(() => {
               {author !== null ? (
                 <>
                   <div className="feed-author-avtaar">
-                    <span>{author.charAt(0)}</span>
+                    <span>{author!==null && author!==undefined && author.charAt(0)}</span>
                   </div>
                 </>
               ) : (
@@ -276,7 +276,7 @@ useEffect(() => {
             <div className="feed-title" onClick={getPost}>
               {title}
             </div>
-            {tags.length > 0 &&tags[0]!="" && (
+            {tags.length > 0 &&tags[0]!=="" && (
               <div className="feed-tags" onClick={getPost}>
                 {tags.length > 0 &&
                   tags
