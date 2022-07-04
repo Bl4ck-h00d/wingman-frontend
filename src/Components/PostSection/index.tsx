@@ -2,7 +2,16 @@ import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import axios from "src/Utils/axiosConfig";
 import { useAppSelector, useAppDispatch } from "src/Redux/hooks";
-import { Tooltip, Divider, Spin, Dropdown, Menu, Modal } from "antd";
+import {
+  Tooltip,
+  Divider,
+  Spin,
+  Dropdown,
+  Menu,
+  Modal,
+  Typography,
+  Carousel,
+} from "antd";
 import { API_URL } from "src/Utils/constants";
 import Notification from "../Utils/Notification";
 import CommentEditor from "./CommentEditor";
@@ -20,7 +29,6 @@ import { ReactComponent as SaveIconColored } from "../../Assets/img/bookmark.svg
 import { ReactComponent as SaveIcon } from "../../Assets/img/save.svg";
 import { Link } from "react-router-dom";
 import AddPostButton from "../Home/AddPostButton";
-
 import {
   CommentOutlined,
   ShareAltOutlined,
@@ -29,6 +37,10 @@ import {
   EditOutlined,
   DeleteOutlined,
 } from "@ant-design/icons";
+import { CLIENT_URL } from "src/Utils/constants";
+
+
+const { Paragraph } = Typography;
 
 const LoadingIcon = <LoadingOutlined style={{ fontSize: 40 }} spin />;
 
@@ -39,6 +51,7 @@ const PostSection = () => {
   const { token, isLoggedIn, username } = useAppSelector(
     (state) => state.authModal
   );
+  const [isShareModalVisible, setIsShareModalVisible] = useState(false);
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [userVote, setUserVote] = useState(0);
@@ -194,6 +207,18 @@ const PostSection = () => {
   //UTILITY FUNCTIONS
   const hideModal = () => {
     setModalVisible(false);
+  };
+
+  const showShareModal = () => {
+    setIsShareModalVisible(true);
+  };
+
+  const handleShareOk = () => {
+    setIsShareModalVisible(false);
+  };
+
+  const handleShareCancel = () => {
+    setIsShareModalVisible(false);
   };
 
   const loginCheck = (message) => {
@@ -479,7 +504,7 @@ const PostSection = () => {
                 </div>
               </Tooltip>
               <Tooltip placement="top" title="Share Post">
-                <div className="share">
+                <div className="share" onClick={showShareModal}>
                   <ShareAltOutlined
                     style={{
                       fontSize: "20px",
@@ -516,6 +541,17 @@ const PostSection = () => {
       >
         <div style={{ fontFamily: "Inter", fontSize: "17px" }}>
           Are you sure you want to delete this post?
+        </div>
+      </Modal>
+      <Modal
+        title="Share"
+        visible={isShareModalVisible}
+        footer={null}
+        onOk={handleShareOk}
+        onCancel={handleShareCancel}
+      >
+        <div className="share-input-container">
+          <Paragraph copyable>{CLIENT_URL + `/post/${id}`}</Paragraph>
         </div>
       </Modal>
     </>

@@ -14,6 +14,7 @@ import { useAppSelector } from "src/Redux/hooks";
 import Notification from "../Utils/Notification";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
+import { CLIENT_URL } from "src/Utils/constants";
 
 const { Paragraph } = Typography;
 
@@ -44,9 +45,8 @@ const FeedCard = ({
   tags,
   saved,
   timestamp,
-  edited
+  edited,
 }: FeedCardInterface) => {
-
   //STATE DEFINITIONS
   const [ratingsCount, setRatingsCount] = useState(Number(ratings));
   const [userVote, setUserVote] = useState(Number(userRating)); //1,-1,0
@@ -60,25 +60,25 @@ const FeedCard = ({
   const { isLoggedIn, token } = useAppSelector((state) => state.authModal);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (timestamp !== "") {
+      const postTime = moment(
+        moment.utc(timestamp).format("DD-MMM-YYYY HH:mm")
+      );
+      const currentTime = moment(moment.utc().format("DD-MMM-YYYY HH:mm"));
+      const duration = moment.duration(currentTime.diff(postTime));
 
-useEffect(() => {
-  
-  if (timestamp !== "") {
-    const postTime = moment(moment.utc(timestamp).format("DD-MMM-YYYY HH:mm"));
-    const currentTime = moment(moment.utc().format("DD-MMM-YYYY HH:mm"));
-    const duration = moment.duration(currentTime.diff(postTime));
+      var days = duration.asDays();
+      var hours = duration.hours();
+      var minutes = duration.minutes();
 
-    var days = duration.asDays();
-    var hours = duration.hours();
-    var minutes = duration.minutes();
-
-    setTimeDifference({
-      days: Math.floor(days),
-      hours: hours,
-      minutes: minutes,
-    });
-  }
-}, [ timestamp]);
+      setTimeDifference({
+        days: Math.floor(days),
+        hours: hours,
+        minutes: minutes,
+      });
+    }
+  }, [timestamp]);
 
   //API CALLS
   const updateRatings = async (newUserVote) => {
@@ -93,17 +93,17 @@ useEffect(() => {
     );
   };
 
-   const savePost = async (postId, save) => {
-     const response = await axios.post(
-       `/api/save/${id}`,
-       { savePost: save },
-       {
-         headers: {
-           Authorization: `Bearer ${token}`,
-         },
-       }
-     );
-   };
+  const savePost = async (postId, save) => {
+    const response = await axios.post(
+      `/api/save/${id}`,
+      { savePost: save },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  };
 
   //UTILITY FUNCTIONS
   const loginCheck = (message) => {
@@ -162,7 +162,6 @@ useEffect(() => {
     updateRatings(newUserVote);
   };
 
- 
   const handleSavePost = () => {
     if (!loginCheck("to save the post")) {
       return;
@@ -227,7 +226,11 @@ useEffect(() => {
               {author !== null ? (
                 <>
                   <div className="feed-author-avtaar">
-                    <span>{author!==null && author!==undefined && author.charAt(0)}</span>
+                    <span>
+                      {author !== null &&
+                        author !== undefined &&
+                        author.charAt(0)}
+                    </span>
                   </div>
                 </>
               ) : (
@@ -276,7 +279,7 @@ useEffect(() => {
             <div className="feed-title" onClick={getPost}>
               {title}
             </div>
-            {tags.length > 0 &&tags[0]!=="" && (
+            {tags.length > 0 && tags[0] !== "" && (
               <div className="feed-tags" onClick={getPost}>
                 {tags.length > 0 &&
                   tags
@@ -356,7 +359,7 @@ useEffect(() => {
         onCancel={handleCancel}
       >
         <div className="share-input-container">
-          <Paragraph copyable>{}</Paragraph>
+          <Paragraph copyable>{CLIENT_URL + `/post/${id}`}</Paragraph>
         </div>
       </Modal>
     </>

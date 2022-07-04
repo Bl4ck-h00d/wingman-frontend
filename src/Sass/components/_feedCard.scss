@@ -137,11 +137,21 @@
   width: 100%;
   height: 30px;
   display: flex;
+  align-items: center;
   padding: auto;
   overflow: hidden;
   justify-content: center;
   border: 1px;
-  background-color: #e2e2e2;
+  background-color: #ece8e8;
+  .ant-typography{
+    margin-bottom: 0!important;
+    width: 100%;
+    padding-left: 10px;
+    .ant-typography-copy{
+      position: absolute;
+      right: 40px;
+    }
+  }
 }
 
 @media only screen and (max-width: 900px) {
