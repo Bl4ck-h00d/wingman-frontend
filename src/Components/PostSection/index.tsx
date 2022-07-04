@@ -205,6 +205,11 @@ const PostSection = () => {
   }, [post, timestamp]);
 
   //UTILITY FUNCTIONS
+
+  const getUser = (username:string) => {
+    navigate(`/profile/${username}`);
+  };
+
   const hideModal = () => {
     setModalVisible(false);
   };
@@ -390,7 +395,7 @@ const PostSection = () => {
                     {post.author !== null ? (
                       <>
                         Posted by{" "}
-                        <span className="author-name">{post.author}</span>
+                        <span className="author-name" onClick={()=>getUser(post.author)}>{post.author}</span>
                       </>
                     ) : (
                       <>Anonymous</>

@@ -14,6 +14,7 @@ interface initialStateInterface {
 
 const initialState: initialStateInterface = {
   username: null,
+  email:null,
   isLoggedIn: false,
   loading: false,
   token: undefined,

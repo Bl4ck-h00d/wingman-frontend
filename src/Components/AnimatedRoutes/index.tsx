@@ -6,6 +6,7 @@ import PostSection from "../PostSection";
 import ErrorPage from "../ErrorPage";
 import { AnimatePresence } from "framer-motion";
 import VerifiedPage from "../VerifiedPage";
+import Profile from "../Profile";
 
 
 const AnimatedRoutes = () => {
@@ -17,7 +18,8 @@ const AnimatedRoutes = () => {
         <Route path="/" element={<Home />} />{" "}
         <Route path="/post" element={<CreatePost />} />
         <Route path="/post/:id" element={<PostSection />} />
-        <Route path="/verfied" element={<VerifiedPage/>} />
+        <Route path="/profile/:profileUsername" element={<Profile />} />
+        <Route path="/verfied" element={<VerifiedPage />} />
         <Route path="*" element={<ErrorPage />} />
       </Routes>
     </AnimatePresence>
