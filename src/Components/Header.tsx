@@ -35,7 +35,7 @@ const Header = () => {
   return (
     <>
       <div className="header-container">
-        <a href="http://localhost:3000/">
+        <a href="https://thewingman.tech/">
           <span className="header-logo">
             <LogoIcon />
             <span>WingMan</span>
