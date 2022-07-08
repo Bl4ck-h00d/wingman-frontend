@@ -284,6 +284,7 @@ const CreatePost = () => {
         >
           <Switch
             style={{ marginLeft: "10px" }}
+            disabled={editingPost ? true : false}
             checked={postAnonymously}
             onChange={() => setPostAnonymously((prevState) => !prevState)}
           />

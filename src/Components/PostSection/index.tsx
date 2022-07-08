@@ -276,7 +276,7 @@ const PostSection = () => {
       newUserVote = -1;
     } else {
       setUserVote(0);
-      newUserVote = 1;
+      newUserVote = 0;
     }
     setRatingsCount((prevState) => prevState + newUserVote);
 
